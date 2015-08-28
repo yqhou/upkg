@@ -316,7 +316,7 @@ int ConvertFieldValueLength( char *cpFieldLength, int iInLen, UpkgFldDefList *uf
     switch( ufdl->eFieldLengthCoding )
     {
         case BYTE:
-            memcpy( caTemp, cpFieldLength, sizeof(caTemp)-1 );
+            memcpy( caTemp, cpFieldLength, strlen(cpFieldLength) );
             iLen = iInLen;
             break;
         case BCD:
@@ -368,11 +368,11 @@ int ConvertFieldValue( char *cpSrc, int iInLen, UpkgFldDefList *ufdl, UpkgResult
             return -1;
         }
         functionMap[functionIdx].ConvertStringFunction( cpSrc, iInLen, ur->value, &iLen ); 
-        ur->value[iLen] = 0;
+        ur->length = iLen;
     }
     else
     {
-        memcpy( ur->value, cpSrc, sizeof(ur->value)-1 );
+        memcpy( ur->value, cpSrc, iInLen );
         ur->value[iInLen] = 0;
     }
     /** 
@@ -382,8 +382,8 @@ int ConvertFieldValue( char *cpSrc, int iInLen, UpkgFldDefList *ufdl, UpkgResult
     {
         LOG( ud->iLogLevel, LOGFILE, "子报文开始...." );
         UpkgDef *subUd = NewUpkgDef();
-        memcpy( subUd->orgMsg, ur->value, sizeof(subUd->orgMsg)-1 );
-        memcpy( subUd->pkgFile, ufdl->subPkgFile, sizeof(subUd->pkgFile)-1 );
+        memcpy( subUd->orgMsg, ur->value, strlen(ur->value) );
+        memcpy( subUd->pkgFile, ufdl->subPkgFile,strlen(ufdl->subPkgFile) );
         ret = UpkgMain( subUd );
         if( ret == 0 )
         {
@@ -480,9 +480,9 @@ int Unpack8583Field( UpkgDef *ud, int *offset, int fieldId )
     
     ur->length = fieldValueLength;
     ur->fieldId = ufdl->fieldId;
-    memcpy( ur->name, ufdl->fieldName, sizeof(ur->name)-1 );
+    memcpy( ur->name, ufdl->fieldName, strlen(ufdl->fieldName) );
     if( ! StringIsNull(ufdl->comment) )
-        memcpy( ur->comment, ufdl->comment, sizeof(ur->comment)-1 );
+        memcpy( ur->comment, ufdl->comment, strlen(ufdl->comment) );
     
     LOG( ud->iLogLevel, LOGFILE, "Field %d, [%s][%d][%s]", ur->fieldId, ur->name, ur->length, ur->value );
     
@@ -573,9 +573,9 @@ int UpkgFIXED( UpkgDef *ud )
         }
         ur->length = ufdl->fieldLength;
         ur->fieldId = ufdl->fieldId;
-        memcpy( ur->name, ufdl->fieldName, sizeof(ur->name)-1 );
+        memcpy( ur->name, ufdl->fieldName, strlen(ufdl->fieldName) );
         if( ! StringIsNull(ufdl->comment) )
-            memcpy( ur->comment, ufdl->comment, sizeof(ur->comment)-1 );
+            memcpy( ur->comment, ufdl->comment, strlen(ufdl->comment) );
         
         LOG( ud->iLogLevel, LOGFILE, "Field %d, [%s][%d][%s]", ur->fieldId, ur->name, ur->length, ur->value );
         
@@ -668,13 +668,13 @@ int UpkgTlv( UpkgDef *ud )
             if( funcIdx >= 0 )
                 functionMap[funcIdx].ConvertStringFunction( caTagValue, iTagLen*2, ur->value, &ur->length );
             else
-                memcpy( ur->value, caTagValue, sizeof(ur->value)-1 );
+                memcpy( ur->value, caTagValue, iTagLen*2 );
         }
         else
-            memcpy( ur->value, caTagValue, sizeof(ur->value)-1 );
-        memcpy( ur->name, caTagBuf, sizeof(ur->name)-1 );
+            memcpy( ur->value, caTagValue, iTagLen*2 );
+        memcpy( ur->name, caTagBuf, strlen(caTagBuf) );
         if( ! StringIsNull( caTagName ) )
-            memcpy( ur->nameZh, caTagName, sizeof(ur->nameZh)-1 );
+            memcpy( ur->nameZh, caTagName, strlen(caTagName) );
         LOG( ud->iLogLevel, LOGFILE, "[%d].TAG=[%s][%s], length=[%d], value[%s][%s]", 
                 count, ur->name, ur->nameZh, iTagLen, caTagValue, ur->value );
         
@@ -733,7 +733,7 @@ int UpkgMain( UpkgDef *ud )
     }
     else
     {
-        memcpy( ud->package, ud->orgMsg, sizeof(ud->package)-1 );
+        memcpy( ud->package, ud->orgMsg, strlen(ud->orgMsg) );
         ud->packageLen = strlen( ud->package );
     }
     switch( ud->pkgDef->ePkgType )
@@ -768,8 +768,8 @@ int Unpack( char *cpMsg, int iInLen, char *pkgFile, char *cpOut )
 {
     int ret = 0;
     UpkgDef *ud = NewUpkgDef();
-    memcpy( ud->orgMsg, cpMsg, sizeof(ud->orgMsg)-1 );
-    memcpy( ud->pkgFile, pkgFile, sizeof(ud->pkgFile)-1 );
+    memcpy( ud->orgMsg, cpMsg, strlen(cpMsg) );
+    memcpy( ud->pkgFile, pkgFile, strlen(pkgFile) );
     ret = UpkgMain( ud );
     if( ret != 0 )
     {

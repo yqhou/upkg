@@ -44,7 +44,7 @@ typedef struct upkg_result_list_t
     char name[128+1];
     char nameZh[128+1];
     char value[1024+1];
-    char comment[1024+1];
+    char comment[128+1];
     int length;
     struct upkg_result_list_t *subfld; 
     struct upkg_result_list_t *next;
