@@ -3,4 +3,4 @@ https://github.com/yqhou/upkg.git
 
 git config --global credential.helper wincred
 git condig --global user.name "yqhou"
-git config --global user.email "yqhou"
+git config --global user.email "aaa@bbb.ccc"
