@@ -1,0 +1,37 @@
+###
+### tlv.PKG
+
+
+[PKGDEF]
+logLevel = 0 # 0不打印日志, 1-打印日志
+pkgId=TLV
+pkgName=TLV报文
+pkgType=TLV           #FIXED(定长) TLV 8583 SEP(分隔符)
+pkgMsgFmt=  ##AsciiHexToByte DeleteNotHexChars Trim
+fieldCount=0
+fieldList=
+
+#fieldLengthFmt: int FunctionName( char *in, int length)
+    #ByteToInt   16进制转换10进制,0X00 0X0D=>214
+    #AsciiHexToInt  16进制字符串转换10进制,"000D"=>214
+    #BcdToInt     BCD压缩字符串转到Int 0X0D --> 000D --> 214
+#fieldFmt:  int FunctionName(char *in, int length, char *out, int *outlen)
+    #AsciiHexToByte     16进制字符串转换原值
+    #ByteToAsciiHex     原值转换成16进制字符串
+    #BcdToByte       BCD压缩转换成原值
+    #BcdToAsciiHex       BCD压缩转换成原值16进制字符串
+    #ByteToBitmap    原值转换成位图             位图域 ByteToBitmap AsciiHexToBitmap必须二选一
+    #AsciiHexToBitmap   16进制字符串转换成Bitmap
+    #ByteHexToIntEx    16进制转换10进制,0X00 0X0D=>214
+    #AsciiHexToIntEx   16进制字符串转换10进制,"000D"=>214
+#sepChar , | \ 
+
+[9f26]
+name=应用密文
+comment=Application Cryptogram b
+fmtFunc=
+
+[9F1E]
+name=接口设备序列号
+comment=IFD
+fmtFunc=AsciiHexToByte

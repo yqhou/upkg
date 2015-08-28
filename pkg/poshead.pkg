@@ -1,0 +1,80 @@
+###
+### POSHEAD.PKG
+
+
+[PKGDEF]
+logLevel = 0 # 0不打印日志, 1-打印日志
+pkgId=poshead
+pkgName=POS报文头
+pkgType=FIXED           #FIXED(定长) TLV 8583 SEP(分隔符)
+pkgMsgFmt=  ##AsciiHexToByte DeleteNotHexChars Trim
+fieldCount=4
+fieldList=F1,F2,F3,F4
+
+#fieldLengthFmt: int FunctionName( char *in, int length)
+    #ByteToInt   16进制转换10进制,0X00 0X0D=>214
+    #AsciiHexToInt  16进制字符串转换10进制,"000D"=>214
+    #BcdToInt     BCD压缩字符串转到Int 0X0D --> 000D --> 214
+#fieldFmt:  int FunctionName(char *in, int length, char *out, int *outlen)
+    #AsciiHexToByte     16进制字符串转换原值
+    #ByteToAsciiHex     原值转换成16进制字符串
+    #BcdToByte       BCD压缩转换成原值
+    #BcdToAsciiHex       BCD压缩转换成原值16进制字符串
+    #ByteToBitmap    原值转换成位图             位图域 ByteToBitmap AsciiHexToBitmap必须二选一
+    #AsciiHexToBitmap   16进制字符串转换成Bitmap
+    #ByteHexToIntEx    16进制转换10进制,0X00 0X0D=>214
+    #AsciiHexToIntEx   16进制字符串转换10进制,"000D"=>214
+#sepChar , | \ 
+
+[F1]
+fieldId=1
+fieldName=通信长度
+fieldType=COMMON
+subPkgId=0
+fieldLengthType=VAR
+fieldLength=4
+fieldLengthCoding=BYTE
+fieldCoding=BYTE
+fieldFmt=
+fieldLengthFmt=
+comment=
+
+[F2]
+fieldId=2
+fieldName=TPDU
+fieldType=COMMON
+subPkgId=0
+fieldLengthType=VAR
+fieldLength=10
+fieldLengthCoding=BYTE
+fieldCoding=BYTE
+fieldFmt=
+fieldLengthFmt=
+comment=
+
+[F3]
+fieldId=3
+fieldName=报文头
+fieldType=COMMON
+subPkgId=0
+fieldLengthType=VAR
+fieldLength=12
+fieldLengthCoding=BYTE
+fieldCoding=BYTE
+fieldFmt=
+fieldLengthFmt=
+comment=
+
+[F4]
+fieldId=4
+fieldName=报文类型
+fieldType=COMMON
+subPkgId=0
+fieldLengthType=VAR
+fieldLength=4
+fieldLengthCoding=BYTE
+fieldCoding=BYTE
+fieldFmt=
+fieldLengthFmt=
+comment=
+

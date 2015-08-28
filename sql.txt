@@ -1,0 +1,5 @@
+select a.fieldId,a.note as fieldName,b.dest as fieldType,a.subpkgid, 
+c.dest as fieldLengthType,a.fieldLength,d.dest as fieldLengthCoding,e.dest as fieldCoding,a.fmtFunc,a.fieldLengthFmt
+from pkgdetail a, enum b, enum c, enum d,enum e where
+a.[pkgId]=401 and  b.name='fieldType' and b.src=a.fieldType and c.[name]='lengthType' and c.src=a.[fieldLengthType] 
+and d.name='CodingType' and d.src=a.fieldLengthCoding and e.name='CodingType' and e.[src]=a.fieldCoding order by fieldId
