@@ -323,7 +323,7 @@ int userlog( int iLogLevel, char *logfile, const char *file, const char *functio
 }
 
 
-void userloghex(int iLogLevel, char *logfile, const char *file, int line, const unsigned char *buf, int len)
+void userloghex(int iLogLevel, char *logfile, const char *file, const char *function,int line, const unsigned char *buf, int len)
 {
 #define LINE_BLOCKS                     3                           /* 每行打印的块数 */
 #define BLOCKE_BYTES                    8                           /* 每块打印的字节数 */
@@ -428,7 +428,7 @@ void userloghex(int iLogLevel, char *logfile, const char *file, int line, const 
     strcat(pLogDataBuf, caLineData);
 
     /* 2. 写入文件 */
-    LOG( iLogLevel, logfile, "%s", pLogDataBuf);
+    userlog( iLogLevel, logfile, file, function, line, "%s", pLogDataBuf);
     /* 释放空间 */
     free(pLogDataBuf);
 }

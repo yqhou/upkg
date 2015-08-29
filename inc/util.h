@@ -9,7 +9,7 @@
 #include <sys/timeb.h>
 
 #define LOG( logLevel, logfile, ...) userlog(logLevel, logfile,__FILE__,__FUNCTION__, __LINE__, __VA_ARGS__)
-#define LOGHEX( logLevel, logfile,buf, len) userloghex(logLevel, logfile, __FILE__,  __LINE__, buf,  len)
+#define LOGHEX( logLevel, logfile,buf, len) userloghex(logLevel, logfile, __FILE__, __FUNCTION__, __LINE__, buf,  len)
 
 #define NEWLINE "\n"
 
@@ -39,8 +39,6 @@ int AsciiHexToIntEx( char *cpSrc, int iInLen, char *cpDest, int *ipOutLen)      
 int ByteHexToInt(char *cpSrc, int iInLen, int *ipVal)                                                ;
 int AsciiHexToInt(char *cpSrc, int iInLen, int *ipVal )                                              ;
 int BcdToInt(char *cpSrc, int iInLen, int *ipVal )                                                   ;
-int userlog( int iLogLevel, char *logfile, const char *file, const char *function, int line, char *fmt, ... )       ;
-void userloghex(int iLogLevel, char *logfile, const char *file, int line, const unsigned char *buf, int len);
 int trim( char *s )                                                                                  ;
 int StringIndexOf( char *cpString, char cSep )                                                       ;
 int StringLastIndexOf( char *cpString, char cSep )                                                   ;

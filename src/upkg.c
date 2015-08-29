@@ -785,7 +785,7 @@ int Unpack( char *cpMsg, int iInLen, char *pkgFile, char *cpOut )
         printf( "%s\n", ud->err );
     }
     UpkgResultListToString( ud->result, cpOut );
-    LOG( 1, ud->logFile, "\n%s",cpOut );
+    LOG( ud->iLogLevel, ud->logFile, "\n%s",cpOut );
     DeleteUpkgDef( ud );
     return 0;
 }
