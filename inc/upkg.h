@@ -92,6 +92,7 @@ typedef struct upkg_def
     char bitmap[256+1];
     char err[512+1];
     int iLogLevel;
+    char logFile[512+1];
     UpkgPkgDefNode *pkgDef;
     UpkgFldDefList *fieldHead;
     UpkgFldDefList *fieldTail;

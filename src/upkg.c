@@ -74,25 +74,31 @@ int LoadPkgFile( char *pkgFile, UpkgDef *ud )
     else
         ud->iLogLevel = atoi( caBuf );
     
+    GetIniConfig( pkgFile, "PKGDEF", "logFile", ud->logFile );
+    if( StringIsNull(ud->logFile) )
+    {
+        memcpy( ud->logFile, LOGFILE, strlen(LOGFILE) );
+    }
+    
     GetIniConfig( pkgFile, "PKGDEF", "pkgId", ud->pkgDef->pkgId );
     if( StringIsNull( ud->pkgDef->pkgId ) )
     {
         sprintf( ud->err, "取 [%s] pkgId 失败\0", pkgFile );
-        LOG( ud->iLogLevel, LOGFILE, ud->err );
+        LOG( ud->iLogLevel, ud->logFile, ud->err );
         return -7;
     }
     GetIniConfig( pkgFile, "PKGDEF", "pkgName", ud->pkgDef->pkgName );
     if( StringIsNull( ud->pkgDef->pkgName ) )
     {
         sprintf( ud->err, "取 [%s] pkgName 失败\0", pkgFile );
-        LOG( ud->iLogLevel, LOGFILE, ud->err );
+        LOG( ud->iLogLevel, ud->logFile, ud->err );
         return -8;
     }
     GetIniConfig( pkgFile, "PKGDEF", "pkgType", ud->pkgDef->pkgType );
     if( StringIsNull( ud->pkgDef->pkgType ) )
     {
         sprintf( ud->err, "取 [%s] pkgType 失败\0", pkgFile );
-        LOG( ud->iLogLevel, LOGFILE, ud->err );
+        LOG( ud->iLogLevel, ud->logFile, ud->err );
         return -9;
     }    
     GetIniConfig( pkgFile, "PKGDEF", "pkgMsgFmt", ud->pkgDef->pkgMsgFmt );
@@ -100,7 +106,7 @@ int LoadPkgFile( char *pkgFile, UpkgDef *ud )
     if( ud->pkgDef->ePkgType == -1 )
     {
         sprintf( ud->err, "[%s] pkgType [%s] 无效\0", pkgFile, ud->pkgDef->pkgType );
-        LOG( ud->iLogLevel, LOGFILE, ud->err );
+        LOG( ud->iLogLevel, ud->logFile, ud->err );
         return -10;
     }
     memset( caBuf, 0, sizeof(caBuf) );
@@ -108,29 +114,29 @@ int LoadPkgFile( char *pkgFile, UpkgDef *ud )
     if( StringIsNull( caBuf ) )
     {
         sprintf( ud->err, "取 [%s] fieldCount 失败\0", pkgFile );
-        LOG( ud->iLogLevel, LOGFILE, ud->err );
+        LOG( ud->iLogLevel, ud->logFile, ud->err );
         return -4;
     }
     ud->pkgDef->fieldCount = atoi( caBuf );
     if( ud->pkgDef->fieldCount < 0 )
     {
         sprintf( ud->err, "fieldCount < 0 \0" );
-        LOG( ud->iLogLevel, LOGFILE, ud->err );
+        LOG( ud->iLogLevel, ud->logFile, ud->err );
         return -5;
     }
     GetIniConfig( pkgFile, "PKGDEF", "fieldList", ud->pkgDef->fieldList );
     if( StringIsNull(ud->pkgDef->fieldList) && ud->pkgDef->fieldCount != 0 )
     {
         sprintf( ud->err, "取 [%s] fieldList 失败, 但fieldCount[%d] 不为0\0", pkgFile, ud->pkgDef->fieldCount );
-        LOG( ud->iLogLevel, LOGFILE, ud->err );
+        LOG( ud->iLogLevel, ud->logFile, ud->err );
         return -6;
     }
     
-    LOG( ud->iLogLevel, LOGFILE, "pkgid[%s], pkgName[%s], pkgType[%s] pkgMsgFmt[%s] ePkgType[%d] fieldCount[%d]", 
+    LOG( ud->iLogLevel, ud->logFile, "pkgid[%s], pkgName[%s], pkgType[%s] pkgMsgFmt[%s] ePkgType[%d] fieldCount[%d]", 
                  ud->pkgDef->pkgId, ud->pkgDef->pkgName, ud->pkgDef->pkgType, ud->pkgDef->pkgMsgFmt, ud->pkgDef->ePkgType, ud->pkgDef->fieldCount );
  
     /*** FIELD ***/
-    LOG( ud->iLogLevel, LOGFILE, "========开始读取域配置========" );
+    LOG( ud->iLogLevel, ud->logFile, "========开始读取域配置========" );
     int i = 0;
     for( i=1; i<=ud->pkgDef->fieldCount; i++ )
     {
@@ -139,7 +145,7 @@ int LoadPkgFile( char *pkgFile, UpkgDef *ud )
         GetListByDiv( ud->pkgDef->fieldList, ',', i, caNode );
         if( StringIsNull(caNode) )
         {
-            LOG( ud->iLogLevel, LOGFILE, "从fieldList取第%d个域节点名称失败", i );
+            LOG( ud->iLogLevel, ud->logFile, "从fieldList取第%d个域节点名称失败", i );
             continue;
         }
         
@@ -150,53 +156,53 @@ int LoadPkgFile( char *pkgFile, UpkgDef *ud )
         ret = GetIniConfig( pkgFile, caNode, "fieldId", caBuf );
         if( StringIsNull(caBuf) )
         {
-            /*LOG( ud->iLogLevel, LOGFILE, "取 fieldId 失败, caBuf=[%s], [%d]", caBuf, ret);*/
+            /*LOG( ud->iLogLevel, ud->logFile, "取 fieldId 失败, caBuf=[%s], [%d]", caBuf, ret);*/
             DeleteUpkgFldDefList( ufdl );
             continue;
         }
-        /*LOG( ud->iLogLevel, LOGFILE, "==== [%s] begin ====", caNode );*/
+        /*LOG( ud->iLogLevel, ud->logFile, "==== [%s] begin ====", caNode );*/
         ufdl->fieldId = atoi( caBuf );
         if( SearchFieldListByFieldId( ud->fieldHead, ufdl->fieldId) )
         {
-            LOG( ud->iLogLevel, LOGFILE, "fieldId[%s][%d]重复", caBuf, ufdl->fieldId );
+            LOG( ud->iLogLevel, ud->logFile, "fieldId[%s][%d]重复", caBuf, ufdl->fieldId );
             DeleteUpkgFldDefList( ufdl );
             continue;
         }
-        /*LOG( ud->iLogLevel, LOGFILE, "fieldId = [%d]", ufdl->fieldId );*/
+        /*LOG( ud->iLogLevel, ud->logFile, "fieldId = [%d]", ufdl->fieldId );*/
         
         /*** fieldName ***/
         GetIniConfig( pkgFile, caNode, "fieldName", ufdl->fieldName );
         if( StringIsNull(ufdl->fieldName) )
         {
-            LOG( ud->iLogLevel, LOGFILE, "[%s] 取 fieldName 失败", caNode );
+            LOG( ud->iLogLevel, ud->logFile, "[%s] 取 fieldName 失败", caNode );
             DeleteUpkgFldDefList( ufdl );
             continue;
         }
-        /*LOG( ud->iLogLevel, LOGFILE, "fieldName = [%s]", ufdl->fieldName );*/
+        /*LOG( ud->iLogLevel, ud->logFile, "fieldName = [%s]", ufdl->fieldName );*/
         
         /*** fieldType ***/
         GetIniConfig( pkgFile, caNode, "fieldType", ufdl->fieldType );
         if( StringIsNull(ufdl->fieldType) )
         {
-            LOG( ud->iLogLevel, LOGFILE, "[%s] 取 fieldType 失败", caNode );
+            LOG( ud->iLogLevel, ud->logFile, "[%s] 取 fieldType 失败", caNode );
             DeleteUpkgFldDefList( ufdl );
             continue;
         }
         ufdl->eFieldType = ConvertFieldType( ufdl->fieldType );
         if( ufdl->eFieldType == -1 )
         {
-            LOG( ud->iLogLevel, LOGFILE, "[%s] fieldType [%s] 无效", caNode, ufdl->fieldType );
+            LOG( ud->iLogLevel, ud->logFile, "[%s] fieldType [%s] 无效", caNode, ufdl->fieldType );
             DeleteUpkgFldDefList( ufdl );
             continue;
         }
-        /*LOG( ud->iLogLevel, LOGFILE, "fieldType = [%s][%d]", ufdl->fieldType, ufdl->eFieldType );*/
+        /*LOG( ud->iLogLevel, ud->logFile, "fieldType = [%s][%d]", ufdl->fieldType, ufdl->eFieldType );*/
         
         /*** subPkgFile ***/
         GetIniConfig( pkgFile, caNode, "subPkgFile", ufdl->subPkgFile );
-        /*LOG( ud->iLogLevel, LOGFILE, "subPkgFile = [%s]", ufdl->subPkgFile );*/
+        /*LOG( ud->iLogLevel, ud->logFile, "subPkgFile = [%s]", ufdl->subPkgFile );*/
         if( StringIsNull(ufdl->subPkgFile) && ufdl->eFieldType == SUBFIELD )
         {
-            LOG( ud->iLogLevel, LOGFILE, "[%s] fieldType=[%s]但subPkgFile为空", caNode, ufdl->fieldType );
+            LOG( ud->iLogLevel, ud->logFile, "[%s] fieldType=[%s]但subPkgFile为空", caNode, ufdl->fieldType );
             DeleteUpkgFldDefList( ufdl );
             continue;
         }
@@ -205,63 +211,63 @@ int LoadPkgFile( char *pkgFile, UpkgDef *ud )
         GetIniConfig( pkgFile, caNode, "fieldLengthType", ufdl->fieldLengthType );
         if( StringIsNull(ufdl->fieldLengthType) )
         {
-            LOG( ud->iLogLevel, LOGFILE, "[%s] 取 fieldLengthType 失败", caNode );
+            LOG( ud->iLogLevel, ud->logFile, "[%s] 取 fieldLengthType 失败", caNode );
             DeleteUpkgFldDefList( ufdl );
             continue;
         }
         ufdl->eFieldLengthType = ConvertLengthType( ufdl->fieldLengthType );
         if( ufdl->eFieldLengthType == -1 )
         {
-            LOG( ud->iLogLevel, LOGFILE, "[%s] fieldLengthType [%s] 无效", caNode, ufdl->fieldLengthType );
+            LOG( ud->iLogLevel, ud->logFile, "[%s] fieldLengthType [%s] 无效", caNode, ufdl->fieldLengthType );
             DeleteUpkgFldDefList( ufdl );
             continue;
         }
-        /*LOG( ud->iLogLevel, LOGFILE, "fieldLengthType = [%s][%d]", ufdl->fieldLengthType, ufdl->eFieldLengthType );*/
+        /*LOG( ud->iLogLevel, ud->logFile, "fieldLengthType = [%s][%d]", ufdl->fieldLengthType, ufdl->eFieldLengthType );*/
         
         /*** fieldLength ***/
         memset( caBuf, 0, sizeof(caBuf) );
         GetIniConfig( pkgFile, caNode, "fieldLength", caBuf );
         if( StringIsNull(caBuf) )
         {
-            LOG( ud->iLogLevel, LOGFILE, "[%s] 取 fieldLength 失败, 取默认 = 0, caBuf=[%s]",caNode, caBuf );
+            LOG( ud->iLogLevel, ud->logFile, "[%s] 取 fieldLength 失败, 取默认 = 0, caBuf=[%s]",caNode, caBuf );
             caBuf[0] = '0';
         }
         ufdl->fieldLength = atoi( caBuf );
-        /*LOG( ud->iLogLevel, LOGFILE, "fieldLength = [%d][%s]", ufdl->fieldLength, caBuf );*/
+        /*LOG( ud->iLogLevel, ud->logFile, "fieldLength = [%d][%s]", ufdl->fieldLength, caBuf );*/
         
         /*** fieldLengthCoding ***/
         GetIniConfig( pkgFile, caNode, "fieldLengthCoding", ufdl->fieldLengthCoding );
         if( StringIsNull(ufdl->fieldLengthCoding) )
         {
-            LOG( ud->iLogLevel, LOGFILE, "[%s] 取 fieldLengthCoding 失败", caNode );
+            LOG( ud->iLogLevel, ud->logFile, "[%s] 取 fieldLengthCoding 失败", caNode );
             DeleteUpkgFldDefList( ufdl );
             continue;
         }
         ufdl->eFieldLengthCoding = ConvertCodingType( ufdl->fieldLengthCoding );
         if( ufdl->eFieldLengthCoding == -1 )
         {
-            LOG( ud->iLogLevel, LOGFILE, "[%s] fieldLengthCoding [%s] 无效", caNode, ufdl->fieldLengthCoding );
+            LOG( ud->iLogLevel, ud->logFile, "[%s] fieldLengthCoding [%s] 无效", caNode, ufdl->fieldLengthCoding );
             DeleteUpkgFldDefList( ufdl );
             continue;
         }
-        /*LOG( ud->iLogLevel, LOGFILE, "fieldLengthCoding = [%s][%d]", ufdl->fieldLengthCoding, ufdl->eFieldLengthCoding );*/
+        /*LOG( ud->iLogLevel, ud->logFile, "fieldLengthCoding = [%s][%d]", ufdl->fieldLengthCoding, ufdl->eFieldLengthCoding );*/
         
         /*** fieldCoding ***/
         GetIniConfig( pkgFile, caNode, "fieldCoding", ufdl->fieldCoding );
         if( StringIsNull(ufdl->fieldCoding) )
         {
-            LOG( ud->iLogLevel, LOGFILE, "[%s] 取 fieldCoding 失败", caNode );
+            LOG( ud->iLogLevel, ud->logFile, "[%s] 取 fieldCoding 失败", caNode );
             DeleteUpkgFldDefList( ufdl );
             continue;
         }
         ufdl->eFieldCoding = ConvertCodingType( ufdl->fieldCoding );
         if( ufdl->eFieldCoding == -1 )
         {
-            LOG( ud->iLogLevel, LOGFILE, "[%s] fieldCoding [%s] 无效", caNode, ufdl->fieldCoding );
+            LOG( ud->iLogLevel, ud->logFile, "[%s] fieldCoding [%s] 无效", caNode, ufdl->fieldCoding );
             DeleteUpkgFldDefList( ufdl );
             continue;
         }
-        /*LOG( ud->iLogLevel, LOGFILE, "fieldCoding = [%s][%d]", ufdl->fieldCoding, ufdl->eFieldCoding );*/
+        /*LOG( ud->iLogLevel, ud->logFile, "fieldCoding = [%s][%d]", ufdl->fieldCoding, ufdl->eFieldCoding );*/
         
         /*** fieldFmt ***/
         GetIniConfig( pkgFile, caNode, "fieldFmt", ufdl->fieldFmt );
@@ -270,17 +276,17 @@ int LoadPkgFile( char *pkgFile, UpkgDef *ud )
             if( strcmp( ufdl->fieldFmt, "ByteToBitmap") && strcmp( ufdl->fieldFmt, "AsciiHexToBitmap") )
             {
                 sprintf( ud->err, "fieldType=[%s],but fieldFmt is not ByteToBitmap either AsciiHexToBitmap", ufdl->fieldType );
-                LOG( ud->iLogLevel, LOGFILE, ud->err );
+                LOG( ud->iLogLevel, ud->logFile, ud->err );
                 return -10;
             }
         }
-        /*LOG( ud->iLogLevel, LOGFILE, "fieldFmt = [%s]", ufdl->fieldFmt );*/
+        /*LOG( ud->iLogLevel, ud->logFile, "fieldFmt = [%s]", ufdl->fieldFmt );*/
         /*** fieldLengthFmt ***/
         GetIniConfig( pkgFile, caNode, "fieldLengthFmt", ufdl->fieldLengthFmt );
-        /*LOG( ud->iLogLevel, LOGFILE, "fieldLengthFmt = [%s]", ufdl->fieldLengthFmt );*/
+        /*LOG( ud->iLogLevel, ud->logFile, "fieldLengthFmt = [%s]", ufdl->fieldLengthFmt );*/
         /*** comment ***/
         GetIniConfig( pkgFile, caNode, "comment", ufdl->comment );
-        /*LOG( ud->iLogLevel, LOGFILE, "comment = [%s]", ufdl->comment );*/
+        /*LOG( ud->iLogLevel, ud->logFile, "comment = [%s]", ufdl->comment );*/
         
         /** sepChar1 **/
         memset( caBuf, 0, sizeof(caBuf) );
@@ -300,14 +306,14 @@ int LoadPkgFile( char *pkgFile, UpkgDef *ud )
             ud->fieldTail->next = ufdl;
             ud->fieldTail = ufdl;
         }
-        /*LOG( ud->iLogLevel, LOGFILE, "==== [%s] end   ====", caNode );*/
+        /*LOG( ud->iLogLevel, ud->logFile, "==== [%s] end   ====", caNode );*/
     }
  
-    LOG( ud->iLogLevel, LOGFILE, "========结束读取域配置========" );
+    LOG( ud->iLogLevel, ud->logFile, "========结束读取域配置========" );
     return 0;
 }
 
-int ConvertFieldValueLength( char *cpFieldLength, int iInLen, UpkgFldDefList *ufdl )
+int ConvertFieldValueLength( char *cpFieldLength, int iInLen, UpkgFldDefList *ufdl, UpkgDef *ud )
 {
     char caTemp[128+1];
     int iLen;
@@ -326,7 +332,7 @@ int ConvertFieldValueLength( char *cpFieldLength, int iInLen, UpkgFldDefList *uf
             AsciiHexToByte( cpFieldLength, iInLen, caTemp, &iLen );
             break;
         default:
-            LOG( 1, LOGFILE, "eFieldLengthCoding无效, [%s][%d]", ufdl->fieldLengthCoding, ufdl->eFieldLengthCoding );
+            LOG( 1, ud->logFile, "eFieldLengthCoding无效, [%s][%d]", ufdl->fieldLengthCoding, ufdl->eFieldLengthCoding );
             return -1;
     }
     if( StringIsNull( ufdl->fieldLengthFmt ) )
@@ -339,7 +345,7 @@ int ConvertFieldValueLength( char *cpFieldLength, int iInLen, UpkgFldDefList *uf
         int functionIdx = GetConvertFunctionIdx( ufdl->fieldLengthFmt, 2 );
         if( functionIdx < 0 )
         {
-            LOG( 1, LOGFILE, "fieldLengthFmt无效,[%s]", ufdl->fieldLengthFmt );
+            LOG( 1, ud->logFile, "fieldLengthFmt无效,[%s]", ufdl->fieldLengthFmt );
             return -2;
         }
         functionMap[functionIdx].ConvertLengthFunction( caTemp, iInLen, &fieldValueLength );
@@ -364,7 +370,7 @@ int ConvertFieldValue( char *cpSrc, int iInLen, UpkgFldDefList *ufdl, UpkgResult
         int functionIdx = GetConvertFunctionIdx( fmtFunction, 1 );
         if( functionIdx < 0 )
         {
-            LOG( 1, LOGFILE, "域值格式转换函数错误[%s]", fmtFunction );
+            LOG( 1, ud->logFile, "域值格式转换函数错误[%s]", fmtFunction );
             return -1;
         }
         functionMap[functionIdx].ConvertStringFunction( cpSrc, iInLen, ur->value, &iLen ); 
@@ -380,7 +386,7 @@ int ConvertFieldValue( char *cpSrc, int iInLen, UpkgFldDefList *ufdl, UpkgResult
     **/
     if( ufdl->eFieldType == SUBFIELD )
     {
-        LOG( ud->iLogLevel, LOGFILE, "子报文开始...." );
+        LOG( ud->iLogLevel, ud->logFile, "子报文开始...." );
         UpkgDef *subUd = NewUpkgDef();
         memcpy( subUd->orgMsg, ur->value, strlen(ur->value) );
         memcpy( subUd->pkgFile, ufdl->subPkgFile,strlen(ufdl->subPkgFile) );
@@ -394,23 +400,25 @@ int ConvertFieldValue( char *cpSrc, int iInLen, UpkgFldDefList *ufdl, UpkgResult
         }
         else
         {
-            LOG( 1, LOGFILE, "子报文处理失败, %s", subUd->err );
+            LOG( 1, ud->logFile, "子报文处理失败, %s", subUd->err );
             ur->subfld = CopyUpkgResultList( subUd->result ) ;
             DeleteUpkgDef( subUd );
         }
-        LOG( ud->iLogLevel, LOGFILE, "子报文结束...." );
+        LOG( ud->iLogLevel, ud->logFile, "子报文结束...." );
     }
     return 0;
 }
 
 int Unpack8583Field( UpkgDef *ud, int *offset, int fieldId )
 {
-    LOG( ud->iLogLevel, LOGFILE, "域 %d: ", fieldId );
+    if( ud == NULL ) 
+            return -39;
+    LOG( ud->iLogLevel, ud->logFile, "域 %d: ", fieldId );
     UpkgFldDefList* ufdl = SearchFieldListByFieldId( ud->fieldHead, fieldId );
     if( ufdl == NULL )
     {
         sprintf( ud->err, "[%s][%s]取域[%d]配置失败,\0", ud->pkgFile, ud->pkgDef->pkgId, fieldId );
-        LOG( 1, LOGFILE, ud->err );
+        LOG( 1, ud->logFile, ud->err );
         return -30;
     }
     char caTemp[1024+1];
@@ -424,48 +432,48 @@ int Unpack8583Field( UpkgDef *ud, int *offset, int fieldId )
             fieldLengthActualLength = (int)( (fieldLengthActualLength+1) / 2 );
         else if ( ufdl->eFieldLengthCoding == ASCIIHEX )
             fieldLengthActualLength = fieldLengthActualLength*2;
-        LOG( ud->iLogLevel, LOGFILE, "域长度类型:[%s],域长度编码类型[%s]，域长度的实际长度=[%d], 域长度: ", 
+        LOG( ud->iLogLevel, ud->logFile, "域长度类型:[%s],域长度编码类型[%s]，域长度的实际长度=[%d], 域长度: ", 
                 ufdl->fieldLengthType, ufdl->fieldLengthCoding, fieldLengthActualLength );
         memset( caTemp, 0, sizeof(caTemp) );
         if( (*offset) + fieldLengthActualLength > ud->packageLen )
         {
             sprintf( ud->err, "offset=[%d],报文长度[%d]不足", (*offset), ud->packageLen  );
-            LOG( 1, LOGFILE, ud->err );
+            LOG( 1, ud->logFile, ud->err );
             return -32;
         }
         memcpy( caTemp, ud->package+(*offset), fieldLengthActualLength );
         (*offset) = (*offset) + fieldLengthActualLength;
-        LOGHEX( ud->iLogLevel, LOGFILE, caTemp, fieldLengthActualLength );
-        fieldValueLength = ConvertFieldValueLength( caTemp,fieldLengthActualLength, ufdl );
+        LOGHEX( ud->iLogLevel, ud->logFile, caTemp, fieldLengthActualLength );
+        fieldValueLength = ConvertFieldValueLength( caTemp,fieldLengthActualLength, ufdl, ud );
         if( fieldValueLength < 0 )
         {
             sprintf( ud->err, "域值长度转换失败");
-            LOG( 1, LOGFILE, ud->err );
+            LOG( 1, ud->logFile, ud->err );
             return -31;
         }
-        LOG( ud->iLogLevel, LOGFILE, "域值长度: [%d]", fieldValueLength );
+        LOG( ud->iLogLevel, ud->logFile, "域值长度: [%d]", fieldValueLength );
     }
     fieldValueActualLength = ufdl->eFieldCoding == BCD ? ((int)( (fieldValueLength+1) / 2 ) ) : 
                             ( ufdl->eFieldCoding == ASCIIHEX ? fieldValueLength*2 : fieldValueLength );
     memset( caTemp, 0, sizeof(caTemp) );
-    LOG( ud->iLogLevel, LOGFILE, "域值长度[%d],域值编码类型[%s],取域值报文实际长度=[%d]",
+    LOG( ud->iLogLevel, ud->logFile, "域值长度[%d],域值编码类型[%s],取域值报文实际长度=[%d]",
          fieldValueLength, ufdl->fieldCoding, fieldValueActualLength );
     if( (*offset) + fieldValueActualLength > ud->packageLen )
     {
         sprintf( ud->err, "offset=[%d],报文长度[%d]不足", (*offset), ud->packageLen  );
-        LOG( 1, LOGFILE, ud->err );
+        LOG( 1, ud->logFile, ud->err );
         return -33;
     }
     memcpy( caTemp, ud->package+(*offset), fieldValueActualLength );
     (*offset) = (*offset) + fieldValueActualLength;
-    LOG( ud->iLogLevel, LOGFILE, "域值:" );
-    LOGHEX( ud->iLogLevel, LOGFILE, caTemp, fieldValueActualLength );
+    LOG( ud->iLogLevel, ud->logFile, "域值:" );
+    LOGHEX( ud->iLogLevel, ud->logFile, caTemp, fieldValueActualLength );
     UpkgResultList *ur = NewUpkgResultList();
     int ret = ConvertFieldValue( caTemp, fieldValueActualLength, ufdl, ur, ud);
     if( ret != 0 )
     {
         sprintf( ud->err, "域值格式转换失败" );
-        LOG( 1, LOGFILE, ud->err );
+        LOG( 1, ud->logFile, ud->err );
         DeleteUpkgResultList( ur );
         return -34;
     }
@@ -484,7 +492,7 @@ int Unpack8583Field( UpkgDef *ud, int *offset, int fieldId )
     if( ! StringIsNull(ufdl->comment) )
         memcpy( ur->comment, ufdl->comment, strlen(ufdl->comment) );
     
-    LOG( ud->iLogLevel, LOGFILE, "Field %d, [%s][%d][%s]", ur->fieldId, ur->name, ur->length, ur->value );
+    LOG( ud->iLogLevel, ud->logFile, "Field %d, [%s][%d][%s]", ur->fieldId, ur->name, ur->length, ur->value );
     
     if( ud->result == NULL )
     {
@@ -496,31 +504,31 @@ int Unpack8583Field( UpkgDef *ud, int *offset, int fieldId )
         ud->resultTail->next = ur;
         ud->resultTail = ur;
     }
-    LOG( ud->iLogLevel, LOGFILE, "域 %d end.", fieldId );
+    LOG( ud->iLogLevel, ud->logFile, "域 %d end.", fieldId );
     return 0;
 }
 
 int Upkg8583( UpkgDef *ud )
 {
-    LOG( ud->iLogLevel, LOGFILE, "%s begin...pkgId=[%s],pkgFile=[%s], buffer: ",__FUNCTION__, ud->pkgDef->pkgId, ud->pkgFile );
-    LOGHEX( 1, LOGFILE, ud->package, ud->packageLen );
+    LOG( ud->iLogLevel, ud->logFile, "%s begin...pkgId=[%s],pkgFile=[%s], buffer: ",__FUNCTION__, ud->pkgDef->pkgId, ud->pkgFile );
+    LOGHEX( 1, ud->logFile, ud->package, ud->packageLen );
     int offset = 0, i = 0, ret = 0;
     ret = Unpack8583Field( ud, &offset, 0 );
     if( ret != 0 )
     {
-        LOG( 1, LOGFILE, "解包 %d 域失败", 0 );
+        LOG( 1, ud->logFile, "解包 %d 域失败", 0 );
         return -12;
     }
     ret = Unpack8583Field( ud, &offset, 1 );
     if( ret != 0 )
     {
-        LOG( 1, LOGFILE, "解包 %d 域失败", 1 );
+        LOG( 1, ud->logFile, "解包 %d 域失败", 1 );
         return -12;
     }
     if( StringIsNull( ud->bitmap ) )
     {
         sprintf( ud->err, "位图域未配置或配置不正确\0" );
-        LOG( 1, LOGFILE, ud->err );
+        LOG( 1, ud->logFile, ud->err );
         return -11;
     }
     for( i = 1; i<strlen(ud->bitmap); i++ )
@@ -530,44 +538,44 @@ int Upkg8583( UpkgDef *ud )
             ret = Unpack8583Field( ud, &offset, i+1 );
             if( ret != 0 )
             {
-                LOG( 1, LOGFILE, "解包 %d 域失败", i+1 );
+                LOG( 1, ud->logFile, "解包 %d 域失败", i+1 );
                 return -12;
             }
         }   
     }
     
-    LOG( ud->iLogLevel, LOGFILE, "%s end...", __FUNCTION__ );
+    LOG( ud->iLogLevel, ud->logFile, "%s end...", __FUNCTION__ );
     return 0; 
 }
 
 int UpkgFIXED( UpkgDef *ud )
 {
-    LOG( ud->iLogLevel, LOGFILE, "%s begin...pkgId=[%s],pkgFile=[%s], buffer: ",__FUNCTION__, ud->pkgDef->pkgId, ud->pkgFile );
-    LOGHEX( 1, LOGFILE, ud->package, ud->packageLen );
+    LOG( ud->iLogLevel, ud->logFile, "%s begin...pkgId=[%s],pkgFile=[%s], buffer: ",__FUNCTION__, ud->pkgDef->pkgId, ud->pkgFile );
+    LOGHEX( 1, ud->logFile, ud->package, ud->packageLen );
     
     int offset = 0,  fieldValueActualLength = 0;
     UpkgFldDefList *ufdl;
     char caTemp[1024+1];
     for( ufdl=ud->fieldHead; ufdl; ufdl=ufdl->next )
     {
-        LOG( ud->iLogLevel, LOGFILE , "域: %d ...", ufdl->fieldId );
+        LOG( ud->iLogLevel, ud->logFile , "域: %d ...", ufdl->fieldId );
         fieldValueActualLength = ufdl->eFieldCoding == BCD ? ((int)( (ufdl->fieldLength+1) / 2 ) ) : 
                             ( ufdl->eFieldCoding == ASCIIHEX ? ufdl->fieldLength*2 : ufdl->fieldLength );
-        LOG( ud->iLogLevel, LOGFILE, "域值长度[%d],域值编码类型[%s],取域值报文实际长度=[%d]",
+        LOG( ud->iLogLevel, ud->logFile, "域值长度[%d],域值编码类型[%s],取域值报文实际长度=[%d]",
             ufdl->fieldLength, ufdl->fieldCoding, fieldValueActualLength );
         if( offset+fieldValueActualLength > ud->packageLen )
             fieldValueActualLength = ud->packageLen - offset;
         memset( caTemp, 0, sizeof(caTemp) );
         memcpy( caTemp, ud->package+offset, fieldValueActualLength );
         offset += fieldValueActualLength;
-        LOG( ud->iLogLevel, LOGFILE, "域值:" );
-        LOGHEX( ud->iLogLevel, LOGFILE, caTemp, fieldValueActualLength );
+        LOG( ud->iLogLevel, ud->logFile, "域值:" );
+        LOGHEX( ud->iLogLevel, ud->logFile, caTemp, fieldValueActualLength );
         UpkgResultList *ur = NewUpkgResultList();
         int ret = ConvertFieldValue( caTemp, fieldValueActualLength, ufdl, ur, ud );
         if( ret != 0 )
         {
             sprintf( ud->err, "域值格式转换失败" );
-            LOG( 1, LOGFILE, ud->err );
+            LOG( 1, ud->logFile, ud->err );
             DeleteUpkgResultList( ur );
             return -44;
         }
@@ -577,7 +585,7 @@ int UpkgFIXED( UpkgDef *ud )
         if( ! StringIsNull(ufdl->comment) )
             memcpy( ur->comment, ufdl->comment, strlen(ufdl->comment) );
         
-        LOG( ud->iLogLevel, LOGFILE, "Field %d, [%s][%d][%s]", ur->fieldId, ur->name, ur->length, ur->value );
+        LOG( ud->iLogLevel, ud->logFile, "Field %d, [%s][%d][%s]", ur->fieldId, ur->name, ur->length, ur->value );
         
         if( ud->result == NULL )
         {
@@ -589,19 +597,19 @@ int UpkgFIXED( UpkgDef *ud )
             ud->resultTail->next = ur;
             ud->resultTail = ur;
         }     
-        LOG( ud->iLogLevel, LOGFILE , "域: %d end.", ufdl->fieldId );
+        LOG( ud->iLogLevel, ud->logFile , "域: %d end.", ufdl->fieldId );
         if( offset >= ud->packageLen )
             break;  
     }
     
-    LOG( ud->iLogLevel, LOGFILE, "%s end...", __FUNCTION__ );
+    LOG( ud->iLogLevel, ud->logFile, "%s end...", __FUNCTION__ );
     return 0;    
 }
 
 int UpkgTlv( UpkgDef *ud )
 {
-    LOG( ud->iLogLevel, LOGFILE, "%s begin...pkgId=[%s],pkgFile=[%s], buffer: ",__FUNCTION__, ud->pkgDef->pkgId, ud->pkgFile );
-    LOGHEX( 1, LOGFILE, ud->package, ud->packageLen );
+    LOG( ud->iLogLevel, ud->logFile, "%s begin...pkgId=[%s],pkgFile=[%s], buffer: ",__FUNCTION__, ud->pkgDef->pkgId, ud->pkgFile );
+    LOGHEX( 1, ud->logFile, ud->package, ud->packageLen );
     
     int offset = 0, count = 0;
     while( offset < ud->packageLen )
@@ -651,7 +659,7 @@ int UpkgTlv( UpkgDef *ud )
         if( offset+iTagLen*2 > ud->packageLen )
         {
             sprintf( ud->err, "长度不足, offset=[%d], iTagLen=[%d], packageLen=[%d]", offset, iTagLen * 2, ud->packageLen );
-            LOG( 1, LOGFILE, ud->err );
+            LOG( 1, ud->logFile, ud->err );
             return -55;
         }
         memcpy( caTagValue, ud->package+offset, iTagLen * 2 );
@@ -675,7 +683,7 @@ int UpkgTlv( UpkgDef *ud )
         memcpy( ur->name, caTagBuf, strlen(caTagBuf) );
         if( ! StringIsNull( caTagName ) )
             memcpy( ur->nameZh, caTagName, strlen(caTagName) );
-        LOG( ud->iLogLevel, LOGFILE, "[%d].TAG=[%s][%s], length=[%d], value[%s][%s]", 
+        LOG( ud->iLogLevel, ud->logFile, "[%d].TAG=[%s][%s], length=[%d], value[%s][%s]", 
                 count, ur->name, ur->nameZh, iTagLen, caTagValue, ur->value );
         
         if( ud->result == NULL )
@@ -690,7 +698,7 @@ int UpkgTlv( UpkgDef *ud )
         }       
     }           
     
-    LOG( ud->iLogLevel, LOGFILE, "%s end...", __FUNCTION__ );
+    LOG( ud->iLogLevel, ud->logFile, "%s end...", __FUNCTION__ );
     return 0;    
 }
 
@@ -713,6 +721,7 @@ int UpkgMain( UpkgDef *ud )
     ret = LoadPkgFile( ud->pkgFile, ud );
     if( ret != 0 )
     {
+        printf( "LoadPkgFile [%s]失败, 请检查\n", ud->pkgFile );
         return ret;
     }
     /*** 预处理 ***/
@@ -758,7 +767,7 @@ int UpkgMain( UpkgDef *ud )
     }
     if( ret != 0 )
     {
-        LOG( ud->iLogLevel, LOGFILE, "ret = %d, %s", ret, ud->err );
+        LOG( ud->iLogLevel, ud->logFile, "ret = %d, %s", ret, ud->err );
         return ret;
     }
     return 0;   
@@ -776,7 +785,7 @@ int Unpack( char *cpMsg, int iInLen, char *pkgFile, char *cpOut )
         printf( "%s\n", ud->err );
     }
     UpkgResultListToString( ud->result, cpOut );
-    LOG( 1, LOGFILE, "\n%s",cpOut );
+    LOG( 1, ud->logFile, "\n%s",cpOut );
     DeleteUpkgDef( ud );
     return 0;
 }

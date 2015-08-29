@@ -1,8 +1,8 @@
 CC = gcc
-INCDIR=./inc
-BINDIR=.
+INCDIR=../inc
+BINDIR=../bin
 LIBPATH=c:\Users\Yanqing\AppData\Local\Code\bin
-OBJDIR=./obj
+OBJDIR=../obj
 IINC=-I${INCDIR}
 LLIB=-L${LIBPATH} 
 LIBFLAG=-lupkg

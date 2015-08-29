@@ -3,7 +3,8 @@
 
 
 [PKGDEF]
-logLevel = 0 # 0不打印日志, 1-打印日志
+logLevel = 1 # 0不打印日志, 1-打印日志
+logFile = D:\program\git\upkg\log/pos.log
 pkgId=poshead
 pkgName=POS报文头
 pkgType=FIXED           #FIXED(定长) TLV 8583 SEP(分隔符)

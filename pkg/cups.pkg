@@ -3,7 +3,8 @@
 
 
 [PKGDEF]
-logLevel = 0 # 0不打印日志, 1-打印日志
+logLevel = 1 # 0不打印日志, 1-打印日志
+logFile = D:\program\git\upkg\log/cups.log
 pkgId=201
 pkgName=CUPS
 pkgType=8583           #ICXP(定长) TLV 8583 SEP(分隔符)
@@ -32,7 +33,7 @@ fieldList=F0,F1,F2,F3,F4,F5,F6,F7,F8,F9,F10,F11,F12,F13,F14,F15,F16,F17,F18,F19,
 fieldId=0
 fieldName=HEAD
 fieldType=SUBFIELD #fieldType: COMMON-一般域 SUBFIELD-子报文  BITMAP- 位图
-subPkgFile=pkg/cupshead.pkg
+subPkgFile=D:\program\git\upkg/pkg/cupshead.pkg
 fieldLengthType=VAR #fieldLengthType: VAR-固定长度 LLVAR-两位变长 LLLVAR-三位变长
 fieldLength=54
 fieldLengthCoding=BYTE #Coding: Byte-原值 AsciiHex-16进制字符串 BCD-BCD压缩 BIT-二进制比特101010101010
@@ -474,7 +475,7 @@ comment=
 fieldId=54
 fieldName=实际余额
 fieldType=SUBFIELD
-subPkgFile=pkg/posf54.pkg
+subPkgFile=D:\program\git\upkg/pkg/posf54.pkg
 fieldLengthType=VAR
 fieldLength=43
 fieldLengthCoding=BYTE
@@ -487,7 +488,7 @@ comment=
 fieldId=55
 fieldName=基于PBOC借贷记标准的IC卡数据域
 fieldType=SUBFIELD
-subPkgFile=pkg/tlv.pkg
+subPkgFile=D:\program\git\upkg/pkg/tlv.pkg
 fieldLengthType=LLLVAR
 fieldLength=255
 fieldLengthCoding=BYTE
