@@ -164,7 +164,7 @@ int LoadPkgFile( char *pkgFile, UpkgDef *ud )
         ufdl->fieldId = atoi( caBuf );
         if( SearchFieldListByFieldId( ud->fieldHead, ufdl->fieldId) )
         {
-            LOG( ud->iLogLevel, ud->logFile, "fieldId[%s][%d]重复", caBuf, ufdl->fieldId );
+            LOG( ud->iLogLevel, ud->logFile, "[%s][%s].fieldId[%s][%d]重复", pkgFile, caNode, caBuf, ufdl->fieldId );
             DeleteUpkgFldDefList( ufdl );
             continue;
         }
@@ -275,7 +275,7 @@ int LoadPkgFile( char *pkgFile, UpkgDef *ud )
         {
             if( strcmp( ufdl->fieldFmt, "ByteToBitmap") && strcmp( ufdl->fieldFmt, "AsciiHexToBitmap") )
             {
-                sprintf( ud->err, "fieldType=[%s],but fieldFmt is not ByteToBitmap either AsciiHexToBitmap", ufdl->fieldType );
+                sprintf( ud->err, "fieldType=[%s],but fieldFmt is not ByteToBitmap either AsciiHexToBitmap\0", ufdl->fieldType );
                 LOG( ud->iLogLevel, ud->logFile, ud->err );
                 return -10;
             }
@@ -437,7 +437,7 @@ int Unpack8583Field( UpkgDef *ud, int *offset, int fieldId )
         memset( caTemp, 0, sizeof(caTemp) );
         if( (*offset) + fieldLengthActualLength > ud->packageLen )
         {
-            sprintf( ud->err, "offset=[%d],报文长度[%d]不足", (*offset), ud->packageLen  );
+            sprintf( ud->err, "offset=[%d],报文长度[%d],域长度的实际长度=%d\0", (*offset), ud->packageLen, fieldLengthActualLength  );
             LOG( 1, ud->logFile, ud->err );
             return -32;
         }
@@ -447,7 +447,7 @@ int Unpack8583Field( UpkgDef *ud, int *offset, int fieldId )
         fieldValueLength = ConvertFieldValueLength( caTemp,fieldLengthActualLength, ufdl, ud );
         if( fieldValueLength < 0 )
         {
-            sprintf( ud->err, "域值长度转换失败");
+            sprintf( ud->err, "域值长度转换失败\0");
             LOG( 1, ud->logFile, ud->err );
             return -31;
         }
@@ -460,7 +460,7 @@ int Unpack8583Field( UpkgDef *ud, int *offset, int fieldId )
          fieldValueLength, ufdl->fieldCoding, fieldValueActualLength );
     if( (*offset) + fieldValueActualLength > ud->packageLen )
     {
-        sprintf( ud->err, "offset=[%d],报文长度[%d]不足", (*offset), ud->packageLen  );
+        sprintf( ud->err, "offset=[%d],报文长度[%d]不足,域值报文实际长度=%d\0", (*offset), ud->packageLen, fieldValueActualLength  );
         LOG( 1, ud->logFile, ud->err );
         return -33;
     }
@@ -472,7 +472,7 @@ int Unpack8583Field( UpkgDef *ud, int *offset, int fieldId )
     int ret = ConvertFieldValue( caTemp, fieldValueActualLength, ufdl, ur, ud);
     if( ret != 0 )
     {
-        sprintf( ud->err, "域值格式转换失败" );
+        sprintf( ud->err, "域值格式转换失败\0" );
         LOG( 1, ud->logFile, ud->err );
         DeleteUpkgResultList( ur );
         return -34;
@@ -516,14 +516,14 @@ int Upkg8583( UpkgDef *ud )
     ret = Unpack8583Field( ud, &offset, 0 );
     if( ret != 0 )
     {
-        LOG( 1, ud->logFile, "解包 %d 域失败", 0 );
+        LOG( 1, ud->logFile, "解包 %d 域失败, ret=%d", 0, ret );
         return -12;
     }
     ret = Unpack8583Field( ud, &offset, 1 );
     if( ret != 0 )
     {
-        LOG( 1, ud->logFile, "解包 %d 域失败", 1 );
-        return -12;
+        LOG( 1, ud->logFile, "解包 %d 域失败, ret=%d", 1, ret );
+        return -13;
     }
     if( StringIsNull( ud->bitmap ) )
     {
@@ -538,8 +538,8 @@ int Upkg8583( UpkgDef *ud )
             ret = Unpack8583Field( ud, &offset, i+1 );
             if( ret != 0 )
             {
-                LOG( 1, ud->logFile, "解包 %d 域失败", i+1 );
-                return -12;
+                LOG( 1, ud->logFile, "解包 %d 域失败, ret=%d", i+1, ret );
+                return -14;
             }
         }   
     }
@@ -574,7 +574,7 @@ int UpkgFIXED( UpkgDef *ud )
         int ret = ConvertFieldValue( caTemp, fieldValueActualLength, ufdl, ur, ud );
         if( ret != 0 )
         {
-            sprintf( ud->err, "域值格式转换失败" );
+            sprintf( ud->err, "域值格式转换失败\0" );
             LOG( 1, ud->logFile, ud->err );
             DeleteUpkgResultList( ur );
             return -44;
@@ -599,7 +599,10 @@ int UpkgFIXED( UpkgDef *ud )
         }     
         LOG( ud->iLogLevel, ud->logFile , "域: %d end.", ufdl->fieldId );
         if( offset >= ud->packageLen )
+        {
+            LOG( ud->iLogLevel, ud->logFile, "offset[%d] >= packageLen[%d], over.", offset, ud->packageLen );
             break;  
+        }
     }
     
     LOG( ud->iLogLevel, ud->logFile, "%s end...", __FUNCTION__ );
@@ -658,7 +661,7 @@ int UpkgTlv( UpkgDef *ud )
         /** value **/
         if( offset+iTagLen*2 > ud->packageLen )
         {
-            sprintf( ud->err, "长度不足, offset=[%d], iTagLen=[%d], packageLen=[%d]", offset, iTagLen * 2, ud->packageLen );
+            sprintf( ud->err, "长度不足, offset=[%d], iTagLen=[%d], packageLen=[%d]\0", offset, iTagLen * 2, ud->packageLen );
             LOG( 1, ud->logFile, ud->err );
             return -55;
         }
@@ -710,7 +713,7 @@ int UpkgMain( UpkgDef *ud )
     if( StringIsNull(ud->pkgFile) )
     {
         memset( ud->err, 0, sizeof(ud->err) );
-        sprintf( ud->err, "pkgFile is null" );
+        sprintf( ud->err, "pkgFile is null\0" );
         return -2;
     }
     if( StringIsNull(ud->orgMsg) )
@@ -730,13 +733,13 @@ int UpkgMain( UpkgDef *ud )
         int functionIdx = GetConvertFunctionIdx( ud->pkgDef->pkgMsgFmt, 1 );
         if( functionIdx < 0 )
         {
-            sprintf( ud->err, "pkgMsgFmt格式化函数不存在 [%s]", ud->pkgDef->pkgMsgFmt );
+            sprintf( ud->err, "pkgMsgFmt格式化函数不存在 [%s]\0", ud->pkgDef->pkgMsgFmt );
             return -7;
         }
         ret = functionMap[functionIdx].ConvertStringFunction( ud->orgMsg, strlen(ud->orgMsg), ud->package, &(ud->packageLen));
         if( ret != 0 )
         {
-            sprintf( ud->err, "输入内容格式转换失败" );
+            sprintf( ud->err, "输入内容格式转换失败\0" );
             return -6;        
         }
     }
@@ -777,7 +780,7 @@ int Unpack( char *cpMsg, int iInLen, char *pkgFile, char *cpOut )
 {
     int ret = 0;
     UpkgDef *ud = NewUpkgDef();
-    memcpy( ud->orgMsg, cpMsg, strlen(cpMsg) );
+    memcpy( ud->orgMsg, cpMsg, iInLen );
     memcpy( ud->pkgFile, pkgFile, strlen(pkgFile) );
     ret = UpkgMain( ud );
     if( ret != 0 )
