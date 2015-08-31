@@ -25,6 +25,8 @@ fieldList=
     #AsciiHexToBitmap   16进制字符串转换成Bitmap
     #ByteHexToIntEx    16进制转换10进制,0X00 0X0D=>214
     #AsciiHexToIntEx   16进制字符串转换10进制,"000D"=>214
+    #DeleteReturnChars 删除回车符
+    #DeleteNotHexChars 删除非16进制字符
 #sepChar , | \ 
 
 [9f26]

@@ -6,6 +6,7 @@
 
 struct function_map_t functionMap[] = 
 {
+    {"DeleteReturnChars", 1, DeleteReturnChars, NULL },
 	{"DeleteNotHexChars",  1, DeleteNotHexChars, NULL},
 	{"ByteToAsciiHex", 1, ByteToAsciiHex, NULL },
 	{"AsciiHexToByte",  1, AsciiHexToByte, NULL},
@@ -51,6 +52,22 @@ int DeleteNotHexChars(char *cpSrc, int iInLen, char *cpDest, int *ipOutLen)
     for( i=0; i<iInLen; i++ )
     {
         if( IsHexChar( (unsigned char)cpSrc[i]) )
+        {
+            cpDest[j++] = cpSrc[i];           
+        }
+    }
+    cpDest[j] = 0;
+    *ipOutLen = j;
+    return 0;
+}
+
+int DeleteReturnChars(char *cpSrc, int iInLen, char *cpDest, int *ipOutLen)
+{
+    *ipOutLen = 0;
+    int i = 0, j = 0;
+    for( i=0; i<iInLen; i++ )
+    {
+        if( (unsigned char)cpSrc[i] != '\n' && (unsigned char)cpSrc[i] != '\r' )
         {
             cpDest[j++] = cpSrc[i];           
         }

@@ -24,6 +24,7 @@ struct function_map_t
 
 extern struct function_map_t functionMap[];
 
+int DeleteReturnChars(char *cpSrc, int iInLen, char *cpDest, int *ipOutLen);
 int GetConvertFunctionIdx( char *convertFunctionName, int type );   /* 1-ConvertStringFunction 2-ConvertLengthFunction */                   
 int IsHexChar( unsigned char c )                                                                              ;
 int DeleteNotHexChars(char *cpSrc, int iInLen, char *cpDest, int *ipOutLen)                          ;
