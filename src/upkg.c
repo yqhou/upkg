@@ -400,7 +400,7 @@ int ConvertFieldValue( char *cpSrc, int iInLen, UpkgFldDefList *ufdl, UpkgResult
         }
         else
         {
-            LOG( 1, ud->logFile, "子报文处理失败, %s", subUd->err );
+            LOG( 1, ud->logFile, "子报文处理失败, %s. 查看[%s]", subUd->err, subUd->logFile );
             ur->subfld = CopyUpkgResultList( subUd->result ) ;
             DeleteUpkgDef( subUd );
         }
