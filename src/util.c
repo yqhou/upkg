@@ -475,14 +475,14 @@ int StringIsNullOrWhiteSpace( char *cpStr )
         return 1;
     while( cpStr[i] != 0 )
     {
-        if( cpStr[i] != ' ' || cpStr[i] != '\t' || cpStr[i] != '\n' || cpStr[i] != '\r' )
+        if( cpStr[i] != ' ' && cpStr[i] != '\t' && cpStr[i] != '\n' && cpStr[i] != '\r' )
             return 0;
     }
     return 1;
 }
 int StringIsNull( char *cpStr )
 {
-    if( strlen( cpStr ) == 0 )
+    if( strlen( cpStr ) == 0 || cpStr == NULL)
         return 1;
     return 0;
 }
