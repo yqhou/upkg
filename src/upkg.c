@@ -441,7 +441,7 @@ int Unpack8583Field( UpkgDef *ud, int *offset, int fieldId )
         memset( caTemp, 0, sizeof(caTemp) );
         if( (*offset) + fieldLengthActualLength > ud->packageLen )
         {
-            sprintf( ud->err, "offset=[%d],报文长度[%d],域长度的实际长度=%d\0", (*offset), ud->packageLen, fieldLengthActualLength  );
+            sprintf( ud->err, "offset=[%d],报文长度[%d], 需要的长度=%d\0", (*offset), ud->packageLen, fieldLengthActualLength  );
             LOG( 1, ud->logFile, ud->err );
             return PackageLengthNotEnough;
         }
@@ -464,7 +464,7 @@ int Unpack8583Field( UpkgDef *ud, int *offset, int fieldId )
          fieldValueLength, ufdl->fieldCoding, fieldValueActualLength );
     if( (*offset) + fieldValueActualLength > ud->packageLen )
     {
-        sprintf( ud->err, "offset=[%d],报文长度[%d]不足,域值报文实际长度=%d\0", (*offset), ud->packageLen, fieldValueActualLength  );
+        sprintf( ud->err, "offset=[%d],报文长度[%d]不足,需要的长度=%d\0", (*offset), ud->packageLen, fieldValueActualLength  );
         LOG( 1, ud->logFile, ud->err );
         return PackageLengthNotEnough;
     }
