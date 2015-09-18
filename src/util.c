@@ -468,23 +468,37 @@ int trim( char *s )
     return(0);
 }
 
-int StringIsNullOrWhiteSpace( char *cpStr )
+Boolean StringIsNullOrWhiteSpace( char *cpStr )
 {
     int i = 0;
     if( strlen( cpStr ) == 0 ) 
-        return 1;
+        return True;
     while( cpStr[i] != 0 )
     {
         if( cpStr[i] != ' ' && cpStr[i] != '\t' && cpStr[i] != '\n' && cpStr[i] != '\r' )
-            return 0;
+            return False;
+        i++;
     }
-    return 1;
+    return True;
 }
-int StringIsNull( char *cpStr )
+Boolean StringIsNull( char *cpStr )
 {
     if( strlen( cpStr ) == 0 || cpStr == NULL)
-        return 1;
-    return 0;
+        return True;
+    return False;
+}
+Boolean StringIsDigit( char *cpSrc )
+{
+    int i = 0;
+    if( strlen( cpSrc ) == 0 )
+        return False;
+    while( cpSrc[i] != 0 )
+    {
+        if( cpSrc[i] < '0' || cpSrc[i] > '9' )
+            return False;
+        i++;
+    }
+    return True;
 }
 int StringIndexOf( char *cpString, char cSep )
 {
@@ -505,7 +519,7 @@ int StringLastIndexOf( char *cpString, char cSep )
 /***
 假定 cpValue 长度足够,n从1开始
 ***/
-int GetListByDiv( char *cpBuf, char cSep, int n, char *cpValue )
+int GetListByDiv( char *cpBuf, char cSep, int n, char *cpValue, int outMaxLen )
 {
     int idx = 0;
     int c = 0;
@@ -518,8 +532,9 @@ int GetListByDiv( char *cpBuf, char cSep, int n, char *cpValue )
     idx = StringIndexOf( cpBuf, cSep );
     if( idx < 0 && n == 1)
     {
-        memcpy( cpValue, cpBuf, strlen(cpBuf) );
-        return strlen(cpBuf);
+        int outLen = MIN( outMaxLen, strlen(cpBuf) );
+        memcpy( cpValue, cpBuf, outLen );
+        return outLen;
     }
     else if(idx == 0 && n == 1 )
     {
@@ -533,11 +548,12 @@ int GetListByDiv( char *cpBuf, char cSep, int n, char *cpValue )
     }         
     if( n == 1 )
     {
-        memcpy( cpValue, cpBuf, idx );
-        return idx;
+        int outLen = MIN( outMaxLen, idx );
+        memcpy( cpValue, cpBuf, outLen );
+        return outLen;
     }
     else
-        return GetListByDiv( cpBuf+idx+1, cSep, n-1, cpValue );
+        return GetListByDiv( cpBuf+idx+1, cSep, n-1, cpValue, outMaxLen );
 }
 
 /***
@@ -545,7 +561,7 @@ int GetListByDiv( char *cpBuf, char cSep, int n, char *cpValue )
 xxx
 ^
 ****/
-FILE* GetIniFileNodePos( char *cpFile, char *cpNode, FILE *fp )
+FILE* GetIniFileNodePosition( char *cpFile, char *cpNode, FILE *fp )
 {
 	char caReadBuf[2048];
 	char caNodeName[128];
@@ -575,14 +591,15 @@ FILE* GetIniFileNodePos( char *cpFile, char *cpNode, FILE *fp )
 [NodeName]
 cfgName = cpValue
 **/
-int GetIniConfig( char *cpFile, char *cpNode, char *cpCfgName, char *cpValue )
+int GetIniConfig( char *cpFile, char *cpNode, char *cpCfgName, char *cpValue, int outMaxLen )
 {
     FILE *fp;
     int idx = 0;
     char caCfgNameTmp[128];
     char caReadBuf[2048];
     /**LOG( 1, "upkg.log", "cpFile=[%s], cpNode=[%s], cpCfgName=[%s]",cpFile, cpNode, cpCfgName );**/
-    fp = GetIniFileNodePos( cpFile, cpNode, fp );
+    outMaxLen = outMaxLen > 1500 ? 1500 : outMaxLen;
+    fp = GetIniFileNodePosition( cpFile, cpNode, fp );
     if( fp == NULL )
     {
         return 2;
@@ -618,6 +635,7 @@ int GetIniConfig( char *cpFile, char *cpNode, char *cpCfgName, char *cpValue )
                     vLen = idx1;
                 else
                     vLen = len - idx - 1;
+                vLen = MIN( outMaxLen, vLen );
                 memcpy( cpValue, caReadBuf+idx+1, vLen );
                 cpValue[vLen] = 0;
 				trim( cpValue );

@@ -7,12 +7,20 @@
 #include <stdarg.h>
 #include <time.h>
 #include <sys/timeb.h>
+#include <errno.h>
 
 #define LOG( logLevel, logfile, ...) userlog(logLevel, logfile,__FILE__,__FUNCTION__, __LINE__, __VA_ARGS__)
 #define LOGHEX( logLevel, logfile,buf, len) userloghex(logLevel, logfile, __FILE__, __FUNCTION__, __LINE__, buf,  len)
 
 #define NEWLINE "\n"
+#define MAX( a, b ) ( (a) > (b) ? (a) : (b) )
+#define MIN( a, b ) ( (a) > (b) ? (b) : (a) )
 
+typedef enum
+{
+    False = 0,
+    True
+} Boolean;
 
 struct function_map_t
 {
@@ -43,9 +51,10 @@ int BcdToInt(char *cpSrc, int iInLen, int *ipVal )                              
 int trim( char *s )                                                                                  ;
 int StringIndexOf( char *cpString, char cSep )                                                       ;
 int StringLastIndexOf( char *cpString, char cSep )                                                   ;
-int GetListByDiv( char *cpBuf, char cSep, int n, char *cpValue )                                     ;
-int GetIniConfig( char *cpFile, char *cpNode, char *cpCfgName, char *cpValue )                       ;
-FILE* GetIniFileNodePos( char *cpFile, char *cpNode, FILE *fp )                                      ;
-
-
+int GetListByDiv( char *cpBuf, char cSep, int n, char *cpValue, int outMaxLen )                      ;
+int GetIniConfig( char *cpFile, char *cpNode, char *cpCfgName, char *cpValue, int outMaxLen )        ;
+FILE* GetIniFileNodePosition( char *cpFile, char *cpNode, FILE *fp )                                      ;
+Boolean StringIsDigit( char *cpSrc );
+Boolean StringIsNull( char *cpStr );
+Boolean StringIsNullOrWhiteSpace( char *cpStr );
 #endif

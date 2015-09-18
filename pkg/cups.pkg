@@ -1,903 +1,105 @@
-###
-### CUPS.PKG
+### ../pkg/cupsSep.pkg
+
+#fieldLengthFmt: int FunctionName( char *in, int length) 
+    #ByteToInt   16进制转换10进制,0X00 0X0D=>214 
+    #AsciiHexToInt  16进制字符串转换10进制,"000D"=>214 
+    #BcdToInt     BCD压缩字符串转到Int 0X0D --> 000D --> 214 
+#fieldFmt:  int FunctionName(char *in, int length, char *out, int *outlen) 
+    #AsciiHexToByte     16进制字符串转换原值 
+    #ByteToAsciiHex     原值转换成16进制字符串 
+    #BcdToByte       BCD压缩转换成原值 
+    #BcdToAsciiHex       BCD压缩转换成原值16进制字符串 
+    #ByteToBitmap    原值转换成位图             位图域 ByteToBitmap AsciiHexToBitmap必须二选一 
+    #AsciiHexToBitmap   16进制字符串转换成Bitmap 
+    #ByteHexToIntEx    16进制转换10进制,0X00 0X0D=>214 
+    #AsciiHexToIntEx   16进制字符串转换10进制,"000D"=>214 
+    #DeleteReturnChars 删除回车符 
+    #DeleteNotHexChars 删除非16进制字符 
+#sepChar , | \
 
 
 [PKGDEF]
 logLevel = 1 # 0不打印日志, 1-打印日志
 logFile = D:\program\git\upkg\log/cups.log
-pkgId=201
-pkgName=CUPS
-pkgType=8583           #ICXP(定长) TLV 8583 SEP(分隔符)
-pkgMsgFmt=AsciiHexToByte  ##AsciiHexToByte DeleteNotHexChars Trim
-fieldCount=129
-fieldList=F0,F1,F2,F3,F4,F5,F6,F7,F8,F9,F10,F11,F12,F13,F14,F15,F16,F17,F18,F19,F20,F21,F22,F23,F24,F25,F26,F27,F28,F29,F30,F31,F32,F33,F34,F35,F36,F37,F38,F39,F40,F41,F42,F43,F44,F45,F46,F47,F48,F49,F50,F51,F52,F53,F54,F55,F56,F57,F58,F59,F60,F61,F62,F63,F64,F65,F66,F67,F68,F69,F70,F71,F72,F73,F74,F75,F76,F77,F78,F79,F80,F81,F82,F83,F84,F85,F86,F87,F88,F89,F90,F91,F92,F93,F94,F95,F96,F97,F98,F99,F100,F101,F102,F103,F104,F105,F106,F107,F108,F109,F110,F111,F112,F113,F114,F115,F116,F117,F118,F119,F120,F121,F122,F123,F124,F125,F126,F127,F128
-
-
-#fieldLengthFmt: int FunctionName( char *in, int length)
-    #ByteToInt   16进制转换10进制,0X00 0X0D=>214
-    #AsciiHexToInt  16进制字符串转换10进制,"000D"=>214
-    #BcdToInt     BCD压缩字符串转到Int 0X0D --> 000D --> 214
-#fieldFmt:  int FunctionName(char *in, int length, char *out, int *outlen)
-    #AsciiHexToByte     16进制字符串转换原值
-    #ByteToAsciiHex     原值转换成16进制字符串
-    #BcdToByte       BCD压缩转换成原值
-    #BcdToAsciiHex       BCD压缩转换成原值16进制字符串
-    #ByteToBitmap    原值转换成位图             位图域 ByteToBitmap AsciiHexToBitmap必须二选一
-    #AsciiHexToBitmap   16进制字符串转换成Bitmap
-    #ByteHexToIntEx    16进制转换10进制,0X00 0X0D=>214
-    #AsciiHexToIntEx   16进制字符串转换10进制,"000D"=>214
-    #DeleteReturnChars 删除回车符
-    #DeleteNotHexChars 删除非16进制字符
-#sepChar , | \ 
-
-
-[F0]
-fieldId=0
-fieldName=HEAD
-fieldType=SUBFIELD #fieldType: COMMON-一般域 SUBFIELD-子报文  BITMAP- 位图
-subPkgFile=D:\program\git\upkg/pkg/cupshead.pkg
-fieldLengthType=VAR #fieldLengthType: VAR-固定长度 LLVAR-两位变长 LLLVAR-三位变长
-fieldLength=54
-fieldLengthCoding=BYTE #Coding: Byte-原值 AsciiHex-16进制字符串 BCD-BCD压缩 BIT-二进制比特101010101010
-fieldCoding=BYTE       #Coding: Byte-原值 AsciiHex-16进制字符串 BCD-BCD压缩 BIT-二进制比特101010101010
-fieldFmt=ByteToAsciiHex
-fieldLengthFmt=
-comment=
-
-[F1]
-fieldId=1
-fieldName=bitmap
-fieldType=BITMAP
-subPkgFile=0
-fieldLengthType=VAR
-fieldLength=16
-fieldLengthCoding=BYTE
-fieldCoding=BYTE
-fieldFmt=ByteToBitmap
-fieldLengthFmt=
-comment=
-
-[F2]
-fieldId=2
-fieldName=Pan
-fieldType=COMMON
-subPkgFile=0
-fieldLengthType=LLVAR
-fieldLength=999
-fieldLengthCoding=BYTE
-fieldCoding=BYTE
-fieldFmt=
-fieldLengthFmt=
-comment=
-
-[F3]
-fieldId=3
-fieldName=交易处理码
-fieldType=COMMON
-subPkgFile=0
-fieldLengthType=VAR
-fieldLength=6
-fieldLengthCoding=BYTE
-fieldCoding=BYTE
-fieldFmt=
-fieldLengthFmt=
-comment=
-
-[F4]
-fieldId=4
-fieldName=交易金额
-fieldType=COMMON
-subPkgFile=0
-fieldLengthType=VAR
-fieldLength=12
-fieldLengthCoding=BYTE
-fieldCoding=BYTE
-fieldFmt=
-fieldLengthFmt=
-comment=
-
-[F5]
-fieldId=5
-fieldName=清算金额
-fieldType=COMMON
-subPkgFile=0
-fieldLengthType=VAR
-fieldLength=12
-fieldLengthCoding=BYTE
-fieldCoding=BYTE
-fieldFmt=
-fieldLengthFmt=
-comment=
-
-[F6]
-fieldId=6
-fieldName=持卡人扣账金额
-fieldType=COMMON
-subPkgFile=0
-fieldLengthType=VAR
-fieldLength=12
-fieldLengthCoding=BYTE
-fieldCoding=BYTE
-fieldFmt=
-fieldLengthFmt=
-comment=
-
-[F7]
-fieldId=7
-fieldName=交易传输时间
-fieldType=COMMON
-subPkgFile=0
-fieldLengthType=VAR
-fieldLength=10
-fieldLengthCoding=BYTE
-fieldCoding=BYTE
-fieldFmt=
-fieldLengthFmt=
-comment=
-
-[F11]
-fieldId=11
-fieldName=系统跟踪号
-fieldType=COMMON
-subPkgFile=0
-fieldLengthType=VAR
-fieldLength=6
-fieldLengthCoding=BYTE
-fieldCoding=BYTE
-fieldFmt=
-fieldLengthFmt=
-comment=
-
-[F12]
-fieldId=12
-fieldName=受卡方所在地时间
-fieldType=COMMON
-subPkgFile=0
-fieldLengthType=VAR
-fieldLength=6
-fieldLengthCoding=BYTE
-fieldCoding=BYTE
-fieldFmt=
-fieldLengthFmt=
-comment=
-
-[F13]
-fieldId=13
-fieldName=受卡方所在地日期
-fieldType=COMMON
-subPkgFile=0
-fieldLengthType=VAR
-fieldLength=4
-fieldLengthCoding=BYTE
-fieldCoding=BYTE
-fieldFmt=
-fieldLengthFmt=
-comment=
-
-[F14]
-fieldId=14
-fieldName=卡有效期
-fieldType=COMMON
-subPkgFile=0
-fieldLengthType=VAR
-fieldLength=4
-fieldLengthCoding=BYTE
-fieldCoding=BYTE
-fieldFmt=
-fieldLengthFmt=
-comment=
-
-[F15]
-fieldId=15
-fieldName=清算日期
-fieldType=COMMON
-subPkgFile=0
-fieldLengthType=VAR
-fieldLength=4
-fieldLengthCoding=BYTE
-fieldCoding=BYTE
-fieldFmt=
-fieldLengthFmt=
-comment=
-
-[F18]
-fieldId=18
-fieldName=业务种类
-fieldType=COMMON
-subPkgFile=0
-fieldLengthType=VAR
-fieldLength=4
-fieldLengthCoding=BYTE
-fieldCoding=BYTE
-fieldFmt=
-fieldLengthFmt=
-comment=
-
-[F22]
-fieldId=22
-fieldName=服务点输入方式码
-fieldType=COMMON
-subPkgFile=0
-fieldLengthType=VAR
-fieldLength=3
-fieldLengthCoding=BYTE
-fieldCoding=BYTE
-fieldFmt=
-fieldLengthFmt=
-comment=
-
-[F23]
-fieldId=23
-fieldName=卡序列号
-fieldType=COMMON
-subPkgFile=0
-fieldLengthType=VAR
-fieldLength=3
-fieldLengthCoding=BYTE
-fieldCoding=BYTE
-fieldFmt=
-fieldLengthFmt=
-comment=
-
-[F25]
-fieldId=25
-fieldName=服务点条件码
-fieldType=COMMON
-subPkgFile=0
-fieldLengthType=VAR
-fieldLength=2
-fieldLengthCoding=BYTE
-fieldCoding=BYTE
-fieldFmt=
-fieldLengthFmt=
-comment=
-
-[F26]
-fieldId=26
-fieldName=服务点PIN获取码
-fieldType=COMMON
-subPkgFile=0
-fieldLengthType=VAR
-fieldLength=2
-fieldLengthCoding=BYTE
-fieldCoding=BYTE
-fieldFmt=
-fieldLengthFmt=
-comment=
-
-[F28]
-fieldId=28
-fieldName=交易费
-fieldType=COMMON
-subPkgFile=0
-fieldLengthType=VAR
-fieldLength=9
-fieldLengthCoding=BYTE
-fieldCoding=BYTE
-fieldFmt=
-fieldLengthFmt=
-comment=
-
-[F32]
-fieldId=32
-fieldName=受理机构标识码
-fieldType=COMMON
-subPkgFile=0
-fieldLengthType=LLVAR
-fieldLength=12
-fieldLengthCoding=BYTE
-fieldCoding=BYTE
-fieldFmt=
-fieldLengthFmt=
-comment=
-
-[F33]
-fieldId=33
-fieldName=发送机构标识码
-fieldType=COMMON
-subPkgFile=0
-fieldLengthType=LLVAR
-fieldLength=12
-fieldLengthCoding=BYTE
-fieldCoding=BYTE
-fieldFmt=
-fieldLengthFmt=
-comment=
-
-[F35]
-fieldId=35
-fieldName=第二磁道数据
-fieldType=COMMON
-subPkgFile=0
-fieldLengthType=LLVAR
-fieldLength=37
-fieldLengthCoding=BYTE
-fieldCoding=BYTE
-fieldFmt=
-fieldLengthFmt=
-comment=
-
-[F36]
-fieldId=36
-fieldName=第三磁道数据
-fieldType=COMMON
-subPkgFile=0
-fieldLengthType=LLLVAR
-fieldLength=104
-fieldLengthCoding=BYTE
-fieldCoding=BYTE
-fieldFmt=
-fieldLengthFmt=
-comment=
-
-[F37]
-fieldId=37
-fieldName=检索参考号
-fieldType=COMMON
-subPkgFile=0
-fieldLengthType=VAR
-fieldLength=12
-fieldLengthCoding=BYTE
-fieldCoding=BYTE
-fieldFmt=
-fieldLengthFmt=
-comment=
-
-[F39]
-fieldId=39
-fieldName=响应码
-fieldType=COMMON
-subPkgFile=0
-fieldLengthType=VAR
-fieldLength=2
-fieldLengthCoding=BYTE
-fieldCoding=BYTE
-fieldFmt=
-fieldLengthFmt=
-comment=
-
-[F41]
-fieldId=41
-fieldName=终端标识码
-fieldType=COMMON
-subPkgFile=0
-fieldLengthType=VAR
-fieldLength=8
-fieldLengthCoding=BYTE
-fieldCoding=BYTE
-fieldFmt=
-fieldLengthFmt=
-comment=
-
-[F42]
-fieldId=42
-fieldName=网点标识码
-fieldType=COMMON
-subPkgFile=0
-fieldLengthType=VAR
-fieldLength=15
-fieldLengthCoding=BYTE
-fieldCoding=BYTE
-fieldFmt=
-fieldLengthFmt=
-comment=
-
-[F43]
-fieldId=43
-fieldName=受卡方名称地址
-fieldType=COMMON
-subPkgFile=0
-fieldLengthType=VAR
-fieldLength=40
-fieldLengthCoding=BYTE
-fieldCoding=BYTE
-fieldFmt=
-fieldLengthFmt=
-comment=
-
-[F44]
-fieldId=44
-fieldName=附加响应数据
-fieldType=COMMON
-subPkgFile=0
-fieldLengthType=LLVAR
-fieldLength=25
-fieldLengthCoding=BYTE
-fieldCoding=BYTE
-fieldFmt=
-fieldLengthFmt=
-comment=
-
-[F48]
-fieldId=48
-fieldName=附加数据－私有
-fieldType=COMMON
-subPkgFile=0
-fieldLengthType=LLLVAR
-fieldLength=400
-fieldLengthCoding=BYTE
-fieldCoding=BYTE
-fieldFmt=
-fieldLengthFmt=
-comment=
-
-[F49]
-fieldId=49
-fieldName=交易货币代码
-fieldType=COMMON
-subPkgFile=0
-fieldLengthType=VAR
-fieldLength=3
-fieldLengthCoding=BYTE
-fieldCoding=BYTE
-fieldFmt=
-fieldLengthFmt=
-comment=
-
-[F50]
-fieldId=50
-fieldName=清算货币代码
-fieldType=COMMON
-subPkgFile=0
-fieldLengthType=VAR
-fieldLength=3
-fieldLengthCoding=BYTE
-fieldCoding=BYTE
-fieldFmt=
-fieldLengthFmt=
-comment=
-
-[F52]
-fieldId=52
-fieldName=个人标识码数据
-fieldType=COMMON
-subPkgFile=0
-fieldLengthType=VAR
-fieldLength=8
-fieldLengthCoding=BYTE
-fieldCoding=BYTE
-fieldFmt=ByteToAsciiHex
-fieldLengthFmt=
-comment=
-
-[F53]
-fieldId=53
-fieldName=安全控制信息
-fieldType=COMMON
-subPkgFile=0
-fieldLengthType=VAR
-fieldLength=16
-fieldLengthCoding=BYTE
-fieldCoding=BYTE
-fieldFmt=
-fieldLengthFmt=
-comment=
-
-[F54]
-fieldId=54
-fieldName=实际余额
-fieldType=SUBFIELD
-subPkgFile=D:\program\git\upkg/pkg/posf54.pkg
-fieldLengthType=VAR
-fieldLength=43
-fieldLengthCoding=BYTE
-fieldCoding=BYTE
-fieldFmt=
-fieldLengthFmt=
-comment=
-
-[F55]
-fieldId=55
-fieldName=基于PBOC借贷记标准的IC卡数据域
-fieldType=SUBFIELD
-subPkgFile=D:\program\git\upkg/pkg/tlv.pkg
-fieldLengthType=LLLVAR
-fieldLength=255
-fieldLengthCoding=BYTE
-fieldCoding=BYTE
-fieldFmt=
-fieldLengthFmt=
-comment=
-
-[F57]
-fieldId=57
-fieldName=附加交易信息
-fieldType=COMMON
-subPkgFile=0
-fieldLengthType=LLLVAR
-fieldLength=100
-fieldLengthCoding=BYTE
-fieldCoding=BYTE
-fieldFmt=
-fieldLengthFmt=
-comment=
-
-[F58]
-fieldId=58
-fieldName=基于PBOC电子钱包/存折IC卡标准的交易数据
-fieldType=COMMON
-subPkgFile=0
-fieldLengthType=LLLVAR
-fieldLength=100
-fieldLengthCoding=BYTE
-fieldCoding=BYTE
-fieldFmt=
-fieldLengthFmt=
-comment=
-
-[F60]
-fieldId=60
-fieldName=自定义域
-fieldType=COMMON
-subPkgFile=0
-fieldLengthType=LLLVAR
-fieldLength=30
-fieldLengthCoding=BYTE
-fieldCoding=BYTE
-fieldFmt=
-fieldLengthFmt=
-comment=
-
-[F61]
-fieldId=61
-fieldName=证件编号
-fieldType=COMMON
-subPkgFile=0
-fieldLengthType=LLLVAR
-fieldLength=21
-fieldLengthCoding=BYTE
-fieldCoding=BYTE
-fieldFmt=
-fieldLengthFmt=
-comment=
-
-[F62]
-fieldId=62
-fieldName=受理方保留
-fieldType=COMMON
-subPkgFile=0
-fieldLengthType=LLLVAR
-fieldLength=24
-fieldLengthCoding=BYTE
-fieldCoding=BYTE
-fieldFmt=
-fieldLengthFmt=
-comment=
-
-[F63]
-fieldId=63
-fieldName=受理方保留
-fieldType=COMMON
-subPkgFile=0
-fieldLengthType=LLLVAR
-fieldLength=75
-fieldLengthCoding=BYTE
-fieldCoding=BYTE
-fieldFmt=
-fieldLengthFmt=
-comment=
-
-[F66]
-fieldId=66
-fieldName=清算代码
-fieldType=COMMON
-subPkgFile=0
-fieldLengthType=VAR
-fieldLength=1
-fieldLengthCoding=BYTE
-fieldCoding=BYTE
-fieldFmt=
-fieldLengthFmt=
-comment=
-
-[F70]
-fieldId=70
-fieldName=网络管理信息码
-fieldType=COMMON
-subPkgFile=0
-fieldLengthType=VAR
-fieldLength=3
-fieldLengthCoding=BYTE
-fieldCoding=BYTE
-fieldFmt=
-fieldLengthFmt=
-comment=
-
-[F71]
-fieldId=71
-fieldName=版本编号
-fieldType=COMMON
-subPkgFile=0
-fieldLengthType=VAR
-fieldLength=6
-fieldLengthCoding=BYTE
-fieldCoding=BYTE
-fieldFmt=
-fieldLengthFmt=
-comment=
-
-[F74]
-fieldId=74
-fieldName=贷记笔数
-fieldType=COMMON
-subPkgFile=0
-fieldLengthType=VAR
-fieldLength=10
-fieldLengthCoding=BYTE
-fieldCoding=BYTE
-fieldFmt=
-fieldLengthFmt=
-comment=
-
-[F75]
-fieldId=75
-fieldName=冲正贷记笔数
-fieldType=COMMON
-subPkgFile=0
-fieldLengthType=VAR
-fieldLength=10
-fieldLengthCoding=BYTE
-fieldCoding=BYTE
-fieldFmt=
-fieldLengthFmt=
-comment=
-
-[F76]
-fieldId=76
-fieldName=借记笔数
-fieldType=COMMON
-subPkgFile=0
-fieldLengthType=VAR
-fieldLength=10
-fieldLengthCoding=BYTE
-fieldCoding=BYTE
-fieldFmt=
-fieldLengthFmt=
-comment=
-
-[F77]
-fieldId=77
-fieldName=冲正借记笔数
-fieldType=COMMON
-subPkgFile=0
-fieldLengthType=VAR
-fieldLength=10
-fieldLengthCoding=BYTE
-fieldCoding=BYTE
-fieldFmt=
-fieldLengthFmt=
-comment=
-
-[F78]
-fieldId=78
-fieldName=转账笔数
-fieldType=COMMON
-subPkgFile=0
-fieldLengthType=VAR
-fieldLength=10
-fieldLengthCoding=BYTE
-fieldCoding=BYTE
-fieldFmt=
-fieldLengthFmt=
-comment=
-
-[F79]
-fieldId=79
-fieldName=转账冲正笔数
-fieldType=COMMON
-subPkgFile=0
-fieldLengthType=VAR
-fieldLength=10
-fieldLengthCoding=BYTE
-fieldCoding=BYTE
-fieldFmt=
-fieldLengthFmt=
-comment=
-
-[F86]
-fieldId=86
-fieldName=贷记金额
-fieldType=COMMON
-subPkgFile=0
-fieldLengthType=VAR
-fieldLength=16
-fieldLengthCoding=BYTE
-fieldCoding=BYTE
-fieldFmt=
-fieldLengthFmt=
-comment=
-
-[F87]
-fieldId=87
-fieldName=冲正贷记金额
-fieldType=COMMON
-subPkgFile=0
-fieldLengthType=VAR
-fieldLength=16
-fieldLengthCoding=BYTE
-fieldCoding=BYTE
-fieldFmt=
-fieldLengthFmt=
-comment=
-
-[F88]
-fieldId=88
-fieldName=借记金额
-fieldType=COMMON
-subPkgFile=0
-fieldLengthType=VAR
-fieldLength=16
-fieldLengthCoding=BYTE
-fieldCoding=BYTE
-fieldFmt=
-fieldLengthFmt=
-comment=
-
-[F89]
-fieldId=89
-fieldName=冲正借记金额 
-fieldType=COMMON
-subPkgFile=0
-fieldLengthType=VAR
-fieldLength=16
-fieldLengthCoding=BYTE
-fieldCoding=BYTE
-fieldFmt=
-fieldLengthFmt=
-comment=
-
-[F90]
-fieldId=90
-fieldName=原始数据元
-fieldType=COMMON
-subPkgFile=0
-fieldLengthType=VAR
-fieldLength=42
-fieldLengthCoding=BYTE
-fieldCoding=BYTE
-fieldFmt=
-fieldLengthFmt=
-comment=
-
-[F99]
-fieldId=99
-fieldName=清算机构代码
-fieldType=COMMON
-subPkgFile=0
-fieldLengthType=LLVAR
-fieldLength=12
-fieldLengthCoding=BYTE
-fieldCoding=BYTE
-fieldFmt=
-fieldLengthFmt=
-comment=
-
-[F100]
-fieldId=100
-fieldName=接收机构标识码
-fieldType=COMMON
-subPkgFile=0
-fieldLengthType=LLVAR
-fieldLength=12
-fieldLengthCoding=BYTE
-fieldCoding=BYTE
-fieldFmt=
-fieldLengthFmt=
-comment=
-
-[F102]
-fieldId=102
-fieldName=账户标识1
-fieldType=COMMON
-subPkgFile=0
-fieldLengthType=LLVAR
-fieldLength=32
-fieldLengthCoding=BYTE
-fieldCoding=BYTE
-fieldFmt=
-fieldLengthFmt=
-comment=
-
-[F103]
-fieldId=103
-fieldName=账户标识2
-fieldType=COMMON
-subPkgFile=0
-fieldLengthType=LLVAR
-fieldLength=32
-fieldLengthCoding=BYTE
-fieldCoding=BYTE
-fieldFmt=
-fieldLengthFmt=
-comment=
-
-[F104]
-fieldId=104
-fieldName=交易说明
-fieldType=COMMON
-subPkgFile=0
-fieldLengthType=LLLVAR
-fieldLength=999
-fieldLengthCoding=BYTE
-fieldCoding=BYTE
-fieldFmt=
-fieldLengthFmt=
-comment=
-
-[F122]
-fieldId=122
-fieldName=附加交易说明
-fieldType=COMMON
-subPkgFile=0
-fieldLengthType=LLLVAR
-fieldLength=999
-fieldLengthCoding=BYTE
-fieldCoding=BYTE
-fieldFmt=
-fieldLengthFmt=
-comment=
-
-[F123]
-fieldId=123
-fieldName=发卡方保留
-fieldType=COMMON
-subPkgFile=0
-fieldLengthType=LLLVAR
-fieldLength=60
-fieldLengthCoding=BYTE
-fieldCoding=BYTE
-fieldFmt=
-fieldLengthFmt=
-comment=
-
-[F124]
-fieldId=124
-fieldName=受理方保留
-fieldType=COMMON
-subPkgFile=0
-fieldLengthType=LLLVAR
-fieldLength=60
-fieldLengthCoding=BYTE
-fieldCoding=BYTE
-fieldFmt=
-fieldLengthFmt=
-comment=
-
-[F125]
-fieldId=125
-fieldName=受理方保留
-fieldType=COMMON
-subPkgFile=0
-fieldLengthType=LLLVAR
-fieldLength=999
-fieldLengthCoding=BYTE
-fieldCoding=BYTE
-fieldFmt=
-fieldLengthFmt=
-comment=
-
-[F126]
-fieldId=126
-fieldName=发卡方保留
-fieldType=COMMON
-subPkgFile=0
-fieldLengthType=LLLVAR
-fieldLength=75
-fieldLengthCoding=BYTE
-fieldCoding=BYTE
-fieldFmt=
-fieldLengthFmt=
-comment=
-
-[F128]
-fieldId=128
-fieldName=消息鉴别码
-fieldType=COMMON
-subPkgFile=0
-fieldLengthType=VAR
-fieldLength=8
-fieldLengthCoding=BYTE
-fieldCoding=BYTE
-fieldFmt=
-fieldLengthFmt=
-comment=
+pkgId = 201
+pkgName = CUPS
+pkgType = 8583 #FIXED(定长) TLV 8583 SEP(分隔符)
+pkgMsgFmt = AsciiHexToByte ##AsciiHexToByte DeleteNotHexChars
+IFS = |
+fileType = SEP #INI SEP
+
+
+
+[FIELD]
+#filedId|fieldName|fieldLength|fieldType|subPkgFile|filedLengthType|fieldCoding|fieldLengthCoding|fieldFormatFunc|fieldLengthFormatFunc|Comment
+#fieldType: COMMON-一般域 SUBFIELD-子报文  BITMAP- 位图
+#fieldLengthType: VAR-固定长度 LLVAR-两位变长 LLLVAR-三位变长
+#Coding: Byte-原值 AsciiHex-16进制字符串 BCD-BCD压缩 BIT-二进制比特101010101010
+
+0|HEAD|54|SUBFIELD|D:\program\git\upkg/pkg/cupshead.pkg|VAR|BYTE|BYTE|ByteToAsciiHex||| | |
+1|bitmap|16|BITMAP|0|VAR|BYTE|BYTE|ByteToBitmap||| | |
+2|Pan|999|COMMON|0|LLVAR|BYTE|BYTE|||| | |
+3|交易处理码|6|COMMON|0|VAR|BYTE|BYTE|||| | |
+4|交易金额|12|COMMON|0|VAR|BYTE|BYTE|||| | |
+5|清算金额|12|COMMON|0|VAR|BYTE|BYTE|||| | |
+6|持卡人扣账金额|12|COMMON|0|VAR|BYTE|BYTE|||| | |
+7|交易传输时间|10|COMMON|0|VAR|BYTE|BYTE|||| | |
+11|系统跟踪号|6|COMMON|0|VAR|BYTE|BYTE|||| | |
+12|受卡方所在地时间|6|COMMON|0|VAR|BYTE|BYTE|||| | |
+13|受卡方所在地日期|4|COMMON|0|VAR|BYTE|BYTE|||| | |
+14|卡有效期|4|COMMON|0|VAR|BYTE|BYTE|||| | |
+15|清算日期|4|COMMON|0|VAR|BYTE|BYTE|||| | |
+18|业务种类|4|COMMON|0|VAR|BYTE|BYTE|||| | |
+22|服务点输入方式码|3|COMMON|0|VAR|BYTE|BYTE|||| | |
+23|卡序列号|3|COMMON|0|VAR|BYTE|BYTE|||| | |
+25|服务点条件码|2|COMMON|0|VAR|BYTE|BYTE|||| | |
+26|服务点PIN获取码|2|COMMON|0|VAR|BYTE|BYTE|||| | |
+28|交易费|9|COMMON|0|VAR|BYTE|BYTE|||| | |
+32|受理机构标识码|12|COMMON|0|LLVAR|BYTE|BYTE|||| | |
+33|发送机构标识码|12|COMMON|0|LLVAR|BYTE|BYTE|||| | |
+35|第二磁道数据|37|COMMON|0|LLVAR|BYTE|BYTE|||| | |
+36|第三磁道数据|104|COMMON|0|LLLVAR|BYTE|BYTE|||| | |
+37|检索参考号|12|COMMON|0|VAR|BYTE|BYTE|||| | |
+39|响应码|2|COMMON|0|VAR|BYTE|BYTE|||| | |
+41|终端标识码|8|COMMON|0|VAR|BYTE|BYTE|||| | |
+42|网点标识码|15|COMMON|0|VAR|BYTE|BYTE|||| | |
+43|受卡方名称地址|40|COMMON|0|VAR|BYTE|BYTE|||| | |
+44|附加响应数据|25|COMMON|0|LLVAR|BYTE|BYTE|||| | |
+48|附加数据－私有|400|COMMON|0|LLLVAR|BYTE|BYTE|||| | |
+49|交易货币代码|3|COMMON|0|VAR|BYTE|BYTE|||| | |
+50|清算货币代码|3|COMMON|0|VAR|BYTE|BYTE|||| | |
+52|个人标识码数据|8|COMMON|0|VAR|BYTE|BYTE|ByteToAsciiHex||| | |
+53|安全控制信息|16|COMMON|0|VAR|BYTE|BYTE|||| | |
+54|实际余额|43|SUBFIELD|D:\program\git\upkg/pkg/posf54.pkg|VAR|BYTE|BYTE|||| | |
+55|基于PBOC借贷记标准的IC卡数据域|255|SUBFIELD|D:\program\git\upkg/pkg/tlv.pkg|LLLVAR|BYTE|BYTE|||| | |
+57|附加交易信息|100|COMMON|0|LLLVAR|BYTE|BYTE|||| | |
+58|基于PBOC电子钱包/存折IC卡标准的交易数据|100|COMMON|0|LLLVAR|BYTE|BYTE|||| | |
+60|自定义域|30|COMMON|0|LLLVAR|BYTE|BYTE|||| | |
+61|证件编号|21|COMMON|0|LLLVAR|BYTE|BYTE|||| | |
+62|受理方保留|24|COMMON|0|LLLVAR|BYTE|BYTE|||| | |
+63|受理方保留|75|COMMON|0|LLLVAR|BYTE|BYTE|||| | |
+66|清算代码|1|COMMON|0|VAR|BYTE|BYTE|||| | |
+70|网络管理信息码|3|COMMON|0|VAR|BYTE|BYTE|||| | |
+71|版本编号|6|COMMON|0|VAR|BYTE|BYTE|||| | |
+74|贷记笔数|10|COMMON|0|VAR|BYTE|BYTE|||| | |
+75|冲正贷记笔数|10|COMMON|0|VAR|BYTE|BYTE|||| | |
+76|借记笔数|10|COMMON|0|VAR|BYTE|BYTE|||| | |
+77|冲正借记笔数|10|COMMON|0|VAR|BYTE|BYTE|||| | |
+78|转账笔数|10|COMMON|0|VAR|BYTE|BYTE|||| | |
+79|转账冲正笔数|10|COMMON|0|VAR|BYTE|BYTE|||| | |
+86|贷记金额|16|COMMON|0|VAR|BYTE|BYTE|||| | |
+87|冲正贷记金额|16|COMMON|0|VAR|BYTE|BYTE|||| | |
+88|借记金额|16|COMMON|0|VAR|BYTE|BYTE|||| | |
+89|冲正借记金额|16|COMMON|0|VAR|BYTE|BYTE|||| | |
+90|原始数据元|42|COMMON|0|VAR|BYTE|BYTE|||| | |
+99|清算机构代码|12|COMMON|0|LLVAR|BYTE|BYTE|||| | |
+100|接收机构标识码|12|COMMON|0|LLVAR|BYTE|BYTE|||| | |
+102|账户标识1|32|COMMON|0|LLVAR|BYTE|BYTE|||| | |
+103|账户标识2|32|COMMON|0|LLVAR|BYTE|BYTE|||| | |
+104|交易说明|999|COMMON|0|LLLVAR|BYTE|BYTE|||| | |
+122|附加交易说明|999|COMMON|0|LLLVAR|BYTE|BYTE|||| | |
+123|发卡方保留|60|COMMON|0|LLLVAR|BYTE|BYTE|||| | |
+124|受理方保留|60|COMMON|0|LLLVAR|BYTE|BYTE|||| | |
+125|受理方保留|999|COMMON|0|LLLVAR|BYTE|BYTE|||| | |
+126|发卡方保留|75|COMMON|0|LLLVAR|BYTE|BYTE|||| | |
+128|消息鉴别码|8|COMMON|0|VAR|BYTE|BYTE|||| | |

@@ -45,10 +45,18 @@ B6 BC C7 F8 D0 C2 BB AA  B6 AB C9 D0 B8 BB D6 D0  CE F7 B2 CD CC FC 20 20 \
         case '3':
             ret = Unpack( rejectmsg, strlen(rejectmsg), "../pkg/cupsReject.pkg", out );
             break;
+        case '4':
+            ret = Unpack( cupsmsg, strlen(cupsmsg), "../pkg/cupsIni.pkg", out );
+            break;
         default:
             sprintf( out, "wrong choice" );
             break;
     }
     printf( "OUTPUT:\n[%s]\n", out );
     system("pause");
+    /*
+    ConvertPkgFileType( "../pkg/cups.pkg", "../pkg/cupsSep.pkg", FileTypeSep );
+    ConvertPkgFileType( "../pkg/cups.pkg", "../pkg/cupsIni.pkg", FileTypeIni );
+    ConvertPkgFileType( "../pkg/pos.pkg", "../pkg/posSep.pkg", FileTypeSep );
+    */
 }

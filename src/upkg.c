@@ -2,317 +2,8 @@
 #include "list.h"
 #include "util.h"
 #include "errcode.h"
-#define LOGFILE "upkg.log"
 
 
-FieldType ConvertFieldType( char *cpSrc )
-{
-    if( strcasecmp( cpSrc, "BITMAP") == 0 )
-        return BITMAP;
-     else if( strcasecmp( cpSrc, "COMMON") == 0 )
-         return COMMON;
-     else if( strcasecmp( cpSrc, "SUBFIELD") == 0 )
-         return SUBFIELD;
-#ifdef LOOPSUPPORT
-     else if( strcasecmp( cpSrc, "LOOPBEGIN") == 0 )
-         return LOOPBEGIN;
-     else if( strcasecmp( cpSrc, "LOOPEND") == 0 )
-         return LOOPEND;
-     else if( strcasecmp( cpSrc, "LOOPTIMES") == 0 )
-         return LOOPTIMES;
-#endif         
-     return -1;
-}
-CodingType ConvertCodingType( char *cpSrc )
-{
-     if( strcasecmp( cpSrc, "BYTE") == 0 )
-         return BYTE;
-     else if( strcasecmp( cpSrc, "BCD") == 0 )
-         return BCD;
-     else if( strcasecmp( cpSrc, "ASCIIHEX") == 0 )
-         return ASCIIHEX;
-     return -1;
-}
-LengthType ConvertLengthType( char *cpSrc )
-{
-    if( strcasecmp( cpSrc, "VAR") == 0 )
-        return VAR;
-    else if( strcasecmp( cpSrc, "LLVAR") == 0 )
-        return LLVAR;
-    else if( strcasecmp( cpSrc, "LLLVAR") == 0 )
-        return LLLVAR;
-    return -1;
-}   
-PkgType ConvertPkgType( char *cpSrc )
-{
-    if( strcasecmp( cpSrc, "8583") == 0 )
-        return ISO8583;
-    else if( strcasecmp( cpSrc, "FIXED") == 0 )
-        return FIXED;
-    else if( strcasecmp( cpSrc, "TLV") == 0 )
-        return TLV;
-#ifdef SEPSUPPORT        
-    else if( strcasecmp( cpSrc, "SEP") == 0 )
-        return SEP;
-#endif        
-    return -1;
-}
-
-int LoadPkgFile( char *pkgFile, UpkgDef *ud )
-{
-    FILE *fp;
-    char caFieldList[4096];
-    int ret;
-    if( StringIsNullOrWhiteSpace(pkgFile) )
-        return PKGFILEISNULL;
-    if( ud == NULL )
-        return UPKGDEFISNULL;
-    char caBuf[128];
-    memset( caBuf, 0, sizeof(caBuf) );
-    GetIniConfig( pkgFile, "PKGDEF", "logLevel", caBuf );
-    if( StringIsNull(caBuf) )
-        ud->iLogLevel = 0;
-    else
-        ud->iLogLevel = atoi( caBuf );
-    
-    GetIniConfig( pkgFile, "PKGDEF", "logFile", ud->logFile );
-    if( StringIsNull(ud->logFile) )
-    {
-        memcpy( ud->logFile, LOGFILE, strlen(LOGFILE) );
-    }
-    
-    GetIniConfig( pkgFile, "PKGDEF", "pkgId", ud->pkgDef->pkgId );
-    if( StringIsNull( ud->pkgDef->pkgId ) )
-    {
-        sprintf( ud->err, "取 [%s] pkgId 失败\0", pkgFile );
-        LOG( ud->iLogLevel, ud->logFile, ud->err );
-        return GETPKGIDFAIL;
-    }
-    GetIniConfig( pkgFile, "PKGDEF", "pkgName", ud->pkgDef->pkgName );
-    if( StringIsNull( ud->pkgDef->pkgName ) )
-    {
-        sprintf( ud->err, "取 [%s] pkgName 失败\0", pkgFile );
-        LOG( ud->iLogLevel, ud->logFile, ud->err );
-        return GETPKGNAMEFAIL;
-    }
-    GetIniConfig( pkgFile, "PKGDEF", "pkgType", ud->pkgDef->pkgType );
-    if( StringIsNull( ud->pkgDef->pkgType ) )
-    {
-        sprintf( ud->err, "取 [%s] pkgType 失败\0", pkgFile );
-        LOG( ud->iLogLevel, ud->logFile, ud->err );
-        return GETPKGTYPEFAIL;
-    }    
-    GetIniConfig( pkgFile, "PKGDEF", "pkgMsgFmt", ud->pkgDef->pkgMsgFmt );
-    ud->pkgDef->ePkgType = ConvertPkgType( ud->pkgDef->pkgType );
-    if( ud->pkgDef->ePkgType == -1 )
-    {
-        sprintf( ud->err, "[%s] pkgType [%s] 无效\0", pkgFile, ud->pkgDef->pkgType );
-        LOG( ud->iLogLevel, ud->logFile, ud->err );
-        return PKGTYPEINVALID;
-    }
-    memset( caBuf, 0, sizeof(caBuf) );
-    GetIniConfig( pkgFile, "PKGDEF", "fieldCount", caBuf );
-    if( StringIsNull( caBuf ) )
-    {
-        sprintf( ud->err, "取 [%s] fieldCount 失败\0", pkgFile );
-        LOG( ud->iLogLevel, ud->logFile, ud->err );
-        return GETFIELDCOUNTFAIL;
-    }
-    ud->pkgDef->fieldCount = atoi( caBuf );
-    if( ud->pkgDef->fieldCount < 0 )
-    {
-        sprintf( ud->err, "fieldCount < 0 \0" );
-        LOG( ud->iLogLevel, ud->logFile, ud->err );
-        return FIELDCOUNTINVALID;
-    }
-    GetIniConfig( pkgFile, "PKGDEF", "fieldList", ud->pkgDef->fieldList );
-    if( StringIsNull(ud->pkgDef->fieldList) && ud->pkgDef->fieldCount != 0 )
-    {
-        sprintf( ud->err, "取 [%s] fieldList 失败, 但fieldCount[%d] 不为0\0", pkgFile, ud->pkgDef->fieldCount );
-        LOG( ud->iLogLevel, ud->logFile, ud->err );
-        return GETFIELDLISTFAIL;
-    }
-    
-    LOG( ud->iLogLevel, ud->logFile, "pkgid[%s], pkgName[%s], pkgType[%s] pkgMsgFmt[%s] ePkgType[%d] fieldCount[%d]", 
-                 ud->pkgDef->pkgId, ud->pkgDef->pkgName, ud->pkgDef->pkgType, ud->pkgDef->pkgMsgFmt, ud->pkgDef->ePkgType, ud->pkgDef->fieldCount );
- 
-    /*** FIELD ***/
-    LOG( ud->iLogLevel, ud->logFile, "========开始读取域配置========" );
-    int i = 0;
-    for( i=1; i<=ud->pkgDef->fieldCount; i++ )
-    {
-        char caNode[128];
-        memset( caNode, 0, sizeof(caNode) );
-        GetListByDiv( ud->pkgDef->fieldList, ',', i, caNode );
-        if( StringIsNull(caNode) )
-        {
-            LOG( ud->iLogLevel, ud->logFile, "从fieldList取第%d个域节点名称失败", i );
-            continue;
-        }
-        
-        UpkgFldDefList *ufdl = NewUpkgFldDefList();
-        
-        /*** fieldId ***/
-        memset( caBuf, 0, sizeof(caBuf) );
-        ret = GetIniConfig( pkgFile, caNode, "fieldId", caBuf );
-        if( StringIsNull(caBuf) )
-        {
-            /*LOG( ud->iLogLevel, ud->logFile, "取 fieldId 失败, caBuf=[%s], [%d]", caBuf, ret);*/
-            DeleteUpkgFldDefList( ufdl );
-            continue;
-        }
-        /*LOG( ud->iLogLevel, ud->logFile, "==== [%s] begin ====", caNode );*/
-        ufdl->fieldId = atoi( caBuf );
-        if( SearchFieldListByFieldId( ud->fieldHead, ufdl->fieldId) )
-        {
-            LOG( ud->iLogLevel, ud->logFile, "[%s][%s].fieldId[%s][%d]重复", pkgFile, caNode, caBuf, ufdl->fieldId );
-            DeleteUpkgFldDefList( ufdl );
-            continue;
-        }
-        /*LOG( ud->iLogLevel, ud->logFile, "fieldId = [%d]", ufdl->fieldId );*/
-        
-        /*** fieldName ***/
-        GetIniConfig( pkgFile, caNode, "fieldName", ufdl->fieldName );
-        if( StringIsNull(ufdl->fieldName) )
-        {
-            LOG( ud->iLogLevel, ud->logFile, "[%s] 取 fieldName 失败", caNode );
-            DeleteUpkgFldDefList( ufdl );
-            continue;
-        }
-        /*LOG( ud->iLogLevel, ud->logFile, "fieldName = [%s]", ufdl->fieldName );*/
-        
-        /*** fieldType ***/
-        GetIniConfig( pkgFile, caNode, "fieldType", ufdl->fieldType );
-        if( StringIsNull(ufdl->fieldType) )
-        {
-            LOG( ud->iLogLevel, ud->logFile, "[%s] 取 fieldType 失败", caNode );
-            DeleteUpkgFldDefList( ufdl );
-            continue;
-        }
-        ufdl->eFieldType = ConvertFieldType( ufdl->fieldType );
-        if( ufdl->eFieldType == -1 )
-        {
-            LOG( ud->iLogLevel, ud->logFile, "[%s] fieldType [%s] 无效", caNode, ufdl->fieldType );
-            DeleteUpkgFldDefList( ufdl );
-            continue;
-        }
-        /*LOG( ud->iLogLevel, ud->logFile, "fieldType = [%s][%d]", ufdl->fieldType, ufdl->eFieldType );*/
-        
-        /*** subPkgFile ***/
-        GetIniConfig( pkgFile, caNode, "subPkgFile", ufdl->subPkgFile );
-        /*LOG( ud->iLogLevel, ud->logFile, "subPkgFile = [%s]", ufdl->subPkgFile );*/
-        if( StringIsNull(ufdl->subPkgFile) && ufdl->eFieldType == SUBFIELD )
-        {
-            LOG( ud->iLogLevel, ud->logFile, "[%s] fieldType=[%s]但subPkgFile为空", caNode, ufdl->fieldType );
-            DeleteUpkgFldDefList( ufdl );
-            continue;
-        }
-        
-        /*** fieldLengthType ***/
-        GetIniConfig( pkgFile, caNode, "fieldLengthType", ufdl->fieldLengthType );
-        if( StringIsNull(ufdl->fieldLengthType) )
-        {
-            LOG( ud->iLogLevel, ud->logFile, "[%s] 取 fieldLengthType 失败", caNode );
-            DeleteUpkgFldDefList( ufdl );
-            continue;
-        }
-        ufdl->eFieldLengthType = ConvertLengthType( ufdl->fieldLengthType );
-        if( ufdl->eFieldLengthType == -1 )
-        {
-            LOG( ud->iLogLevel, ud->logFile, "[%s] fieldLengthType [%s] 无效", caNode, ufdl->fieldLengthType );
-            DeleteUpkgFldDefList( ufdl );
-            continue;
-        }
-        /*LOG( ud->iLogLevel, ud->logFile, "fieldLengthType = [%s][%d]", ufdl->fieldLengthType, ufdl->eFieldLengthType );*/
-        
-        /*** fieldLength ***/
-        memset( caBuf, 0, sizeof(caBuf) );
-        GetIniConfig( pkgFile, caNode, "fieldLength", caBuf );
-        if( StringIsNull(caBuf) )
-        {
-            LOG( ud->iLogLevel, ud->logFile, "[%s] 取 fieldLength 失败, 取默认 = 0, caBuf=[%s]",caNode, caBuf );
-            caBuf[0] = '0';
-        }
-        ufdl->fieldLength = atoi( caBuf );
-        /*LOG( ud->iLogLevel, ud->logFile, "fieldLength = [%d][%s]", ufdl->fieldLength, caBuf );*/
-        
-        /*** fieldLengthCoding ***/
-        GetIniConfig( pkgFile, caNode, "fieldLengthCoding", ufdl->fieldLengthCoding );
-        if( StringIsNull(ufdl->fieldLengthCoding) )
-        {
-            LOG( ud->iLogLevel, ud->logFile, "[%s] 取 fieldLengthCoding 失败", caNode );
-            DeleteUpkgFldDefList( ufdl );
-            continue;
-        }
-        ufdl->eFieldLengthCoding = ConvertCodingType( ufdl->fieldLengthCoding );
-        if( ufdl->eFieldLengthCoding == -1 )
-        {
-            LOG( ud->iLogLevel, ud->logFile, "[%s] fieldLengthCoding [%s] 无效", caNode, ufdl->fieldLengthCoding );
-            DeleteUpkgFldDefList( ufdl );
-            continue;
-        }
-        /*LOG( ud->iLogLevel, ud->logFile, "fieldLengthCoding = [%s][%d]", ufdl->fieldLengthCoding, ufdl->eFieldLengthCoding );*/
-        
-        /*** fieldCoding ***/
-        GetIniConfig( pkgFile, caNode, "fieldCoding", ufdl->fieldCoding );
-        if( StringIsNull(ufdl->fieldCoding) )
-        {
-            LOG( ud->iLogLevel, ud->logFile, "[%s] 取 fieldCoding 失败", caNode );
-            DeleteUpkgFldDefList( ufdl );
-            continue;
-        }
-        ufdl->eFieldCoding = ConvertCodingType( ufdl->fieldCoding );
-        if( ufdl->eFieldCoding == -1 )
-        {
-            LOG( ud->iLogLevel, ud->logFile, "[%s] fieldCoding [%s] 无效", caNode, ufdl->fieldCoding );
-            DeleteUpkgFldDefList( ufdl );
-            continue;
-        }
-        /*LOG( ud->iLogLevel, ud->logFile, "fieldCoding = [%s][%d]", ufdl->fieldCoding, ufdl->eFieldCoding );*/
-        
-        /*** fieldFmt ***/
-        GetIniConfig( pkgFile, caNode, "fieldFmt", ufdl->fieldFmt );
-        if( ufdl->eFieldType == BITMAP )
-        {
-            if( strcmp( ufdl->fieldFmt, "ByteToBitmap") && strcmp( ufdl->fieldFmt, "AsciiHexToBitmap") )
-            {
-                sprintf( ud->err, "fieldType=[%s],but fieldFmt is not ByteToBitmap either AsciiHexToBitmap\0", ufdl->fieldType );
-                LOG( ud->iLogLevel, ud->logFile, ud->err );
-                return -10;
-            }
-        }
-        /*LOG( ud->iLogLevel, ud->logFile, "fieldFmt = [%s]", ufdl->fieldFmt );*/
-        /*** fieldLengthFmt ***/
-        GetIniConfig( pkgFile, caNode, "fieldLengthFmt", ufdl->fieldLengthFmt );
-        /*LOG( ud->iLogLevel, ud->logFile, "fieldLengthFmt = [%s]", ufdl->fieldLengthFmt );*/
-        /*** comment ***/
-        GetIniConfig( pkgFile, caNode, "comment", ufdl->comment );
-        /*LOG( ud->iLogLevel, ud->logFile, "comment = [%s]", ufdl->comment );*/
-        
-        /** sepChar1 **/
-        memset( caBuf, 0, sizeof(caBuf) );
-        GetIniConfig( pkgFile, caNode, "sepChar1", caBuf );
-        ufdl->sepChar1 = caBuf[0];
-        memset( caBuf, 0, sizeof(caBuf) );
-        GetIniConfig( pkgFile, caNode, "sepChar2", caBuf );
-        ufdl->sepChar2 = caBuf[0];
-        
-        if( ud->fieldHead == NULL )
-        {
-            ud->fieldHead = ufdl;
-            ud->fieldTail = ufdl;
-        }
-        else
-        {
-            ud->fieldTail->next = ufdl;
-            ud->fieldTail = ufdl;
-        }
-        /*LOG( ud->iLogLevel, ud->logFile, "==== [%s] end   ====", caNode );*/
-    }
- 
-    LOG( ud->iLogLevel, ud->logFile, "========结束读取域配置========" );
-    return SUCCESS;
-}
 
 int ConvertFieldValueLength( char *cpFieldLength, int iInLen, UpkgFldDefList *ufdl, UpkgDef *ud )
 {
@@ -436,8 +127,8 @@ int Unpack8583Field( UpkgDef *ud, int *offset, int fieldId )
             fieldLengthActualLength = (int)( (fieldLengthActualLength+1) / 2 );
         else if ( ufdl->eFieldLengthCoding == ASCIIHEX )
             fieldLengthActualLength = fieldLengthActualLength*2;
-        LOG( ud->iLogLevel, ud->logFile, "域长度类型:[%s],域长度编码类型[%s]，域长度的实际长度=[%d], 域长度: ", 
-                ufdl->fieldLengthType, ufdl->fieldLengthCoding, fieldLengthActualLength );
+        LOG( ud->iLogLevel, ud->logFile, "域长度类型:[%s],域长度编码类型[%s]，域长度的实际长度=[%d], 域长度格式化函数[%s],域长度: ", 
+                ufdl->fieldLengthType, ufdl->fieldLengthCoding, fieldLengthActualLength, ufdl->fieldLengthFmt );
         memset( caTemp, 0, sizeof(caTemp) );
         if( (*offset) + fieldLengthActualLength > ud->packageLen )
         {
@@ -460,8 +151,8 @@ int Unpack8583Field( UpkgDef *ud, int *offset, int fieldId )
     fieldValueActualLength = ufdl->eFieldCoding == BCD ? ((int)( (fieldValueLength+1) / 2 ) ) : 
                             ( ufdl->eFieldCoding == ASCIIHEX ? fieldValueLength*2 : fieldValueLength );
     memset( caTemp, 0, sizeof(caTemp) );
-    LOG( ud->iLogLevel, ud->logFile, "域值长度[%d],域值编码类型[%s],取域值报文实际长度=[%d]",
-         fieldValueLength, ufdl->fieldCoding, fieldValueActualLength );
+    LOG( ud->iLogLevel, ud->logFile, "域值长度[%d],域值编码类型[%s],取域值报文实际长度=[%d],域值格式化函数[%s]",
+         fieldValueLength, ufdl->fieldCoding, fieldValueActualLength, ufdl->fieldFmt );
     if( (*offset) + fieldValueActualLength > ud->packageLen )
     {
         sprintf( ud->err, "offset=[%d],报文长度[%d]不足,需要的长度=%d\0", (*offset), ud->packageLen, fieldValueActualLength  );
@@ -565,8 +256,8 @@ int UpkgFIXED( UpkgDef *ud )
         LOG( ud->iLogLevel, ud->logFile , "域: %d ...", ufdl->fieldId );
         fieldValueActualLength = ufdl->eFieldCoding == BCD ? ((int)( (ufdl->fieldLength+1) / 2 ) ) : 
                             ( ufdl->eFieldCoding == ASCIIHEX ? ufdl->fieldLength*2 : ufdl->fieldLength );
-        LOG( ud->iLogLevel, ud->logFile, "域值长度[%d],域值编码类型[%s],取域值报文实际长度=[%d]",
-            ufdl->fieldLength, ufdl->fieldCoding, fieldValueActualLength );
+        LOG( ud->iLogLevel, ud->logFile, "域值长度[%d],域值编码类型[%s],取域值报文实际长度=[%d],域值格式化函数[%s]",
+            ufdl->fieldLength, ufdl->fieldCoding, fieldValueActualLength, ufdl->fieldFmt );
         if( offset+fieldValueActualLength > ud->packageLen )
             fieldValueActualLength = ud->packageLen - offset;
         memset( caTemp, 0, sizeof(caTemp) );
@@ -675,8 +366,8 @@ int UpkgTlv( UpkgDef *ud )
         UpkgResultList *ur = NewUpkgResultList();
         ur->fieldId = count;
         ur->length = iTagLen;
-        GetIniConfig( ud->pkgFile, caTagBuf, "name", caTagName );
-        GetIniConfig( ud->pkgFile, caTagBuf, "fmtFunc", caFmtFunc );
+        GetIniConfig( ud->pkgFile, caTagBuf, "name", caTagName, sizeof(caTagName)-1 );
+        GetIniConfig( ud->pkgFile, caTagBuf, "fmtFunc", caFmtFunc, sizeof(caFmtFunc)-1 );
         if( ! StringIsNull( caFmtFunc ) )
         {
             int funcIdx = GetConvertFunctionIdx( caFmtFunc, 1 );
@@ -690,8 +381,8 @@ int UpkgTlv( UpkgDef *ud )
         memcpy( ur->name, caTagBuf, strlen(caTagBuf) );
         if( ! StringIsNull( caTagName ) )
             memcpy( ur->nameZh, caTagName, strlen(caTagName) );
-        LOG( ud->iLogLevel, ud->logFile, "[%d].TAG=[%s][%s], length=[%d], value[%s][%s]", 
-                count, ur->name, ur->nameZh, iTagLen, caTagValue, ur->value );
+        LOG( ud->iLogLevel, ud->logFile, "[%d].TAG=[%s][%s], length=[%d], value[%s][%s][%s]", 
+                count, ur->name, ur->nameZh, iTagLen, caTagValue, ur->value, caFmtFunc );
         
         if( ud->result == NULL )
         {

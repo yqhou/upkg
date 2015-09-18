@@ -1,11 +1,12 @@
 CC = gcc
 INCDIR=../inc
 BINDIR=../bin
-LIBPATH=c:\Users\Yanqing\AppData\Local\Code\bin
+LIBPATH=../bin/
 OBJDIR=../obj
 IINC=-I${INCDIR}
 LLIB=-L${LIBPATH} 
 LIBFLAG=-lupkg
+
 ifeq ($(OS),Windows_NT)
 SUFFIX=.dll
 CFLAGS = -g -c -DWIN
@@ -24,7 +25,11 @@ utiltest:test.o
 	${CC} -g $^ -o ${BINDIR}/$@ ${LLIB} ${LIBFLAG}
 	rm -f $^
 
-libupkg: util.o list.o upkg.o
+upkg:main.o
+	${CC} -g $^ -o ${BINDIR}/$@ ${LLIB} ${LIBFLAG}
+	rm -f $^
+    
+libupkg: util.o list.o upkg.o pkgfile.o
 	${CC} -g -shared $^ -o ${LIBPATH}/$@$(SUFFIX)
 	rm -f $^
 	

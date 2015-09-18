@@ -105,6 +105,8 @@ UpkgFldDefList *NewUpkgFldDefList()
 {
     UpkgFldDefList *ufdn = (UpkgFldDefList*)malloc(sizeof(UpkgFldDefList) );
     memset( ufdn, 0, sizeof(UpkgFldDefList) );
+    ufdn->sepChar1 = 0;
+    ufdn->sepChar2 = 0;
     return ufdn;
 }
 void DeleteUpkgFldDefList(UpkgFldDefList *ufdn )

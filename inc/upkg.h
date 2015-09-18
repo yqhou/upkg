@@ -6,6 +6,8 @@
 #include <stdlib.h>
 #include <errno.h>
 
+#define LOGFILE "upkg.log"
+
 typedef enum EnumCodingType
 {
     BYTE = 0,
@@ -38,12 +40,35 @@ typedef enum EnumPkgType
     SEP 
 } PkgType;
 
+typedef enum EnumFileType
+{
+    FileTypeIni = 1,
+    FileTypeSep
+} FileType;
+
+typedef enum
+{
+    FieldIdIdx = 1,
+    FieldNameIdx,
+    FieldLengthIdx,
+    FieldTypeIdx,
+    SubPkgFileIdx,
+    FieldLengthTypeIdx,
+    FieldCodingIdx,
+    FieldLengthCodingIdx,
+    FieldFormatFuncIdx,
+    FieldLengthFormatFuncIdx,
+    CommentIdx,
+    SepChar1Idx,
+    SepChar2Idx
+} EnumSepFileFieldIdx;
+
 typedef struct upkg_result_list_t
 {
     int fieldId;
     char name[128+1];
     char nameZh[128+1];
-    char value[1024+1];
+    char value[4096+1];
     char comment[128+1];
     int length;
     struct upkg_result_list_t *subfld; 
@@ -81,13 +106,16 @@ typedef struct upkg_pkgdef_node
     char pkgMsgFmt[32+1];
     int fieldCount;
     char fieldList[1024+1];   
+    char fileType[32+1];
+    FileType eFileType;
+    char IFS;      /* default '|' where fileType == SEP */
 } UpkgPkgDefNode;
 
 typedef struct upkg_def
 {
     char pkgFile[512+1];
-    char orgMsg[4096+1];
-    char package[4096+1];
+    char orgMsg[40960+1];
+    char package[40960+1];
     int  packageLen;
     char bitmap[256+1];
     char err[512+1];
@@ -100,7 +128,8 @@ typedef struct upkg_def
     UpkgResultList *resultTail;
 } UpkgDef;
 
-
+int LoadPkgFile( char *pkgFile, UpkgDef *ud );
+int ConvertPkgFileType( char *cpFromFile, char *cpToFile, FileType fileType );
 int UpkgMain( UpkgDef *ud )    ;
 int Unpack( char *cpMsg, int iInLen, char *pkgFile, char *cpOut );
 #endif

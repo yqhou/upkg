@@ -27,7 +27,10 @@ typedef enum EnumErrCode
 	ORGMSGISNULL, /* 20 */
 	PackageFmtFunctionInvalid, /* 21 */
 	PackageFmtFail, /* 22 */
-	NotSupportFunction /* 23 */
+	NotSupportFunction /* 23 */,
+    PkgFileTypeInvalid,
+    LoadPkgFileError,
+    PkgFileFormatError
 } ErrCode;
 
 
