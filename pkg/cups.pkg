@@ -19,13 +19,13 @@
 
 
 [PKGDEF]
-logLevel = 1 # 0不打印日志, 1-打印日志
-logFile = D:\program\git\upkg\log/cups.log
-pkgId = 201
-pkgName = CUPS
-pkgType = 8583 #FIXED(定长) TLV 8583 SEP(分隔符)
+logLevel  = 1 # 0不打印日志, 1-打印日志
+logFile   = D:\program\git\upkg\log/cups.log
+pkgId     = 201
+pkgName   = CUPS
+pkgType   = 8583 #FIXED(定长) TLV 8583 SEP(分隔符)
 pkgMsgFmt = AsciiHexToByte ##AsciiHexToByte DeleteNotHexChars
-IFS = |
+IFS       = |
 fileType = SEP #INI SEP
 
 
@@ -36,70 +36,70 @@ fileType = SEP #INI SEP
 #fieldLengthType: VAR-固定长度 LLVAR-两位变长 LLLVAR-三位变长
 #Coding: Byte-原值 AsciiHex-16进制字符串 BCD-BCD压缩 BIT-二进制比特101010101010
 
-0|HEAD|54|SUBFIELD|D:\program\git\upkg/pkg/cupshead.pkg|VAR|BYTE|BYTE|ByteToAsciiHex||| | |
-1|bitmap|16|BITMAP|0|VAR|BYTE|BYTE|ByteToBitmap||| | |
-2|Pan|999|COMMON|0|LLVAR|BYTE|BYTE|||| | |
-3|交易处理码|6|COMMON|0|VAR|BYTE|BYTE|||| | |
-4|交易金额|12|COMMON|0|VAR|BYTE|BYTE|||| | |
-5|清算金额|12|COMMON|0|VAR|BYTE|BYTE|||| | |
-6|持卡人扣账金额|12|COMMON|0|VAR|BYTE|BYTE|||| | |
-7|交易传输时间|10|COMMON|0|VAR|BYTE|BYTE|||| | |
-11|系统跟踪号|6|COMMON|0|VAR|BYTE|BYTE|||| | |
-12|受卡方所在地时间|6|COMMON|0|VAR|BYTE|BYTE|||| | |
-13|受卡方所在地日期|4|COMMON|0|VAR|BYTE|BYTE|||| | |
-14|卡有效期|4|COMMON|0|VAR|BYTE|BYTE|||| | |
-15|清算日期|4|COMMON|0|VAR|BYTE|BYTE|||| | |
-18|业务种类|4|COMMON|0|VAR|BYTE|BYTE|||| | |
-22|服务点输入方式码|3|COMMON|0|VAR|BYTE|BYTE|||| | |
-23|卡序列号|3|COMMON|0|VAR|BYTE|BYTE|||| | |
-25|服务点条件码|2|COMMON|0|VAR|BYTE|BYTE|||| | |
-26|服务点PIN获取码|2|COMMON|0|VAR|BYTE|BYTE|||| | |
-28|交易费|9|COMMON|0|VAR|BYTE|BYTE|||| | |
-32|受理机构标识码|12|COMMON|0|LLVAR|BYTE|BYTE|||| | |
-33|发送机构标识码|12|COMMON|0|LLVAR|BYTE|BYTE|||| | |
-35|第二磁道数据|37|COMMON|0|LLVAR|BYTE|BYTE|||| | |
-36|第三磁道数据|104|COMMON|0|LLLVAR|BYTE|BYTE|||| | |
-37|检索参考号|12|COMMON|0|VAR|BYTE|BYTE|||| | |
-39|响应码|2|COMMON|0|VAR|BYTE|BYTE|||| | |
-41|终端标识码|8|COMMON|0|VAR|BYTE|BYTE|||| | |
-42|网点标识码|15|COMMON|0|VAR|BYTE|BYTE|||| | |
-43|受卡方名称地址|40|COMMON|0|VAR|BYTE|BYTE|||| | |
-44|附加响应数据|25|COMMON|0|LLVAR|BYTE|BYTE|||| | |
-48|附加数据－私有|400|COMMON|0|LLLVAR|BYTE|BYTE|||| | |
-49|交易货币代码|3|COMMON|0|VAR|BYTE|BYTE|||| | |
-50|清算货币代码|3|COMMON|0|VAR|BYTE|BYTE|||| | |
-52|个人标识码数据|8|COMMON|0|VAR|BYTE|BYTE|ByteToAsciiHex||| | |
-53|安全控制信息|16|COMMON|0|VAR|BYTE|BYTE|||| | |
-54|实际余额|43|SUBFIELD|D:\program\git\upkg/pkg/posf54.pkg|VAR|BYTE|BYTE|||| | |
-55|基于PBOC借贷记标准的IC卡数据域|255|SUBFIELD|D:\program\git\upkg/pkg/tlv.pkg|LLLVAR|BYTE|BYTE|||| | |
-57|附加交易信息|100|COMMON|0|LLLVAR|BYTE|BYTE|||| | |
-58|基于PBOC电子钱包/存折IC卡标准的交易数据|100|COMMON|0|LLLVAR|BYTE|BYTE|||| | |
-60|自定义域|30|COMMON|0|LLLVAR|BYTE|BYTE|||| | |
-61|证件编号|21|COMMON|0|LLLVAR|BYTE|BYTE|||| | |
-62|受理方保留|24|COMMON|0|LLLVAR|BYTE|BYTE|||| | |
-63|受理方保留|75|COMMON|0|LLLVAR|BYTE|BYTE|||| | |
-66|清算代码|1|COMMON|0|VAR|BYTE|BYTE|||| | |
-70|网络管理信息码|3|COMMON|0|VAR|BYTE|BYTE|||| | |
-71|版本编号|6|COMMON|0|VAR|BYTE|BYTE|||| | |
-74|贷记笔数|10|COMMON|0|VAR|BYTE|BYTE|||| | |
-75|冲正贷记笔数|10|COMMON|0|VAR|BYTE|BYTE|||| | |
-76|借记笔数|10|COMMON|0|VAR|BYTE|BYTE|||| | |
-77|冲正借记笔数|10|COMMON|0|VAR|BYTE|BYTE|||| | |
-78|转账笔数|10|COMMON|0|VAR|BYTE|BYTE|||| | |
-79|转账冲正笔数|10|COMMON|0|VAR|BYTE|BYTE|||| | |
-86|贷记金额|16|COMMON|0|VAR|BYTE|BYTE|||| | |
-87|冲正贷记金额|16|COMMON|0|VAR|BYTE|BYTE|||| | |
-88|借记金额|16|COMMON|0|VAR|BYTE|BYTE|||| | |
-89|冲正借记金额|16|COMMON|0|VAR|BYTE|BYTE|||| | |
-90|原始数据元|42|COMMON|0|VAR|BYTE|BYTE|||| | |
-99|清算机构代码|12|COMMON|0|LLVAR|BYTE|BYTE|||| | |
-100|接收机构标识码|12|COMMON|0|LLVAR|BYTE|BYTE|||| | |
-102|账户标识1|32|COMMON|0|LLVAR|BYTE|BYTE|||| | |
-103|账户标识2|32|COMMON|0|LLVAR|BYTE|BYTE|||| | |
-104|交易说明|999|COMMON|0|LLLVAR|BYTE|BYTE|||| | |
-122|附加交易说明|999|COMMON|0|LLLVAR|BYTE|BYTE|||| | |
-123|发卡方保留|60|COMMON|0|LLLVAR|BYTE|BYTE|||| | |
-124|受理方保留|60|COMMON|0|LLLVAR|BYTE|BYTE|||| | |
-125|受理方保留|999|COMMON|0|LLLVAR|BYTE|BYTE|||| | |
-126|发卡方保留|75|COMMON|0|LLLVAR|BYTE|BYTE|||| | |
-128|消息鉴别码|8|COMMON|0|VAR|BYTE|BYTE|||| | |
+0|HEAD|54|SUBFIELD|D:\program\git\upkg/pkg/cupshead.pkg|VAR|BYTE|BYTE|ByteToAsciiHex||
+1|bitmap|16|BITMAP|0|VAR|BYTE|BYTE|ByteToBitmap||
+2|Pan|999|COMMON|0|LLVAR|BYTE|BYTE|||
+3|交易处理码|6|COMMON|0|VAR|BYTE|BYTE|||
+4|交易金额|12|COMMON|0|VAR|BYTE|BYTE|||
+5|清算金额|12|COMMON|0|VAR|BYTE|BYTE|||
+6|持卡人扣账金额|12|COMMON|0|VAR|BYTE|BYTE|||
+7|交易传输时间|10|COMMON|0|VAR|BYTE|BYTE|||
+11|系统跟踪号|6|COMMON|0|VAR|BYTE|BYTE|||
+12|受卡方所在地时间|6|COMMON|0|VAR|BYTE|BYTE|||
+13|受卡方所在地日期|4|COMMON|0|VAR|BYTE|BYTE|||
+14|卡有效期|4|COMMON|0|VAR|BYTE|BYTE|||
+15|清算日期|4|COMMON|0|VAR|BYTE|BYTE|||
+18|业务种类|4|COMMON|0|VAR|BYTE|BYTE|||
+22|服务点输入方式码|3|COMMON|0|VAR|BYTE|BYTE|||
+23|卡序列号|3|COMMON|0|VAR|BYTE|BYTE|||
+25|服务点条件码|2|COMMON|0|VAR|BYTE|BYTE|||
+26|服务点PIN获取码|2|COMMON|0|VAR|BYTE|BYTE|||
+28|交易费|9|COMMON|0|VAR|BYTE|BYTE|||
+32|受理机构标识码|12|COMMON|0|LLVAR|BYTE|BYTE|||
+33|发送机构标识码|12|COMMON|0|LLVAR|BYTE|BYTE|||
+35|第二磁道数据|37|COMMON|0|LLVAR|BYTE|BYTE|||
+36|第三磁道数据|104|COMMON|0|LLLVAR|BYTE|BYTE|||
+37|检索参考号|12|COMMON|0|VAR|BYTE|BYTE|||
+39|响应码|2|COMMON|0|VAR|BYTE|BYTE|||
+41|终端标识码|8|COMMON|0|VAR|BYTE|BYTE|||
+42|网点标识码|15|COMMON|0|VAR|BYTE|BYTE|||
+43|受卡方名称地址|40|COMMON|0|VAR|BYTE|BYTE|||
+44|附加响应数据|25|COMMON|0|LLVAR|BYTE|BYTE|||
+48|附加数据－私有|400|COMMON|0|LLLVAR|BYTE|BYTE|||
+49|交易货币代码|3|COMMON|0|VAR|BYTE|BYTE|||
+50|清算货币代码|3|COMMON|0|VAR|BYTE|BYTE|||
+52|个人标识码数据|8|COMMON|0|VAR|BYTE|BYTE|ByteToAsciiHex||
+53|安全控制信息|16|COMMON|0|VAR|BYTE|BYTE|||
+54|实际余额|43|SUBFIELD|D:\program\git\upkg/pkg/posf54.pkg|VAR|BYTE|BYTE|||
+55|基于PBOC借贷记标准的IC卡数据域|255|SUBFIELD|D:\program\git\upkg/pkg/tlv.pkg|LLLVAR|BYTE|BYTE|||
+57|附加交易信息|100|COMMON|0|LLLVAR|BYTE|BYTE|||
+58|基于PBOC电子钱包/存折IC卡标准的交易数据|100|COMMON|0|LLLVAR|BYTE|BYTE|||
+60|自定义域|30|COMMON|0|LLLVAR|BYTE|BYTE|||
+61|证件编号|21|COMMON|0|LLLVAR|BYTE|BYTE|||
+62|受理方保留|24|COMMON|0|LLLVAR|BYTE|BYTE|||
+63|受理方保留|75|COMMON|0|LLLVAR|BYTE|BYTE|||
+66|清算代码|1|COMMON|0|VAR|BYTE|BYTE|||
+70|网络管理信息码|3|COMMON|0|VAR|BYTE|BYTE|||
+71|版本编号|6|COMMON|0|VAR|BYTE|BYTE|||
+74|贷记笔数|10|COMMON|0|VAR|BYTE|BYTE|||
+75|冲正贷记笔数|10|COMMON|0|VAR|BYTE|BYTE|||
+76|借记笔数|10|COMMON|0|VAR|BYTE|BYTE|||
+77|冲正借记笔数|10|COMMON|0|VAR|BYTE|BYTE|||
+78|转账笔数|10|COMMON|0|VAR|BYTE|BYTE|||
+79|转账冲正笔数|10|COMMON|0|VAR|BYTE|BYTE|||
+86|贷记金额|16|COMMON|0|VAR|BYTE|BYTE|||
+87|冲正贷记金额|16|COMMON|0|VAR|BYTE|BYTE|||
+88|借记金额|16|COMMON|0|VAR|BYTE|BYTE|||
+89|冲正借记金额|16|COMMON|0|VAR|BYTE|BYTE|||
+90|原始数据元|42|COMMON|0|VAR|BYTE|BYTE|||
+99|清算机构代码|12|COMMON|0|LLVAR|BYTE|BYTE|||
+100|接收机构标识码|12|COMMON|0|LLVAR|BYTE|BYTE|||
+102|账户标识1|32|COMMON|0|LLVAR|BYTE|BYTE|||
+103|账户标识2|32|COMMON|0|LLVAR|BYTE|BYTE|||
+104|交易说明|999|COMMON|0|LLLVAR|BYTE|BYTE|||
+122|附加交易说明|999|COMMON|0|LLLVAR|BYTE|BYTE|||
+123|发卡方保留|60|COMMON|0|LLLVAR|BYTE|BYTE|||
+124|受理方保留|60|COMMON|0|LLLVAR|BYTE|BYTE|||
+125|受理方保留|999|COMMON|0|LLLVAR|BYTE|BYTE|||
+126|发卡方保留|75|COMMON|0|LLLVAR|BYTE|BYTE|||
+128|消息鉴别码|8|COMMON|0|VAR|BYTE|BYTE|||

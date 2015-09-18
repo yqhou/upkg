@@ -19,13 +19,13 @@
 
 
 [PKGDEF]
-logLevel = 1 # 0不打印日志, 1-打印日志
-logFile = ../log/pos.log
-pkgId = 101
-pkgName = POS
-pkgType = 8583 #FIXED(定长) TLV 8583 SEP(分隔符)
+logLevel  = 1 # 0不打印日志, 1-打印日志
+logFile   = ../log/pos.log
+pkgId     = 101
+pkgName   = POS
+pkgType   = 8583 #FIXED(定长) TLV 8583 SEP(分隔符)
 pkgMsgFmt = AsciiHexToByte ##AsciiHexToByte DeleteNotHexChars
-IFS = |
+IFS       = |
 fileType = SEP #INI SEP
 
 
@@ -36,38 +36,38 @@ fileType = SEP #INI SEP
 #fieldLengthType: VAR-固定长度 LLVAR-两位变长 LLLVAR-三位变长
 #Coding: Byte-原值 AsciiHex-16进制字符串 BCD-BCD压缩 BIT-二进制比特101010101010
 
-0|头|15|SUBFIELD|../pkg/poshead.pkg|VAR|BYTE|BCD|ByteToAsciiHex||| | |
-1|BitMap|8|BITMAP|0|VAR|BYTE|BCD|ByteToBitmap||| | |
-2|卡号|32|COMMON|0|LLVAR|BCD|BCD|BcdToByte||| | |
-3|交易处理码|6|COMMON|0|VAR|BCD|BCD|BcdToByte||| | |
-4|交易金额|12|COMMON|0|VAR|BCD|BCD|BcdToByte||| | |
-11|系统跟踪号|6|COMMON|0|VAR|BCD|BCD|BcdToByte||| | |
-12|受卡方所在地时间|6|COMMON|0|VAR|BCD|BCD|BcdToByte||| | |
-13|受卡方所在地日期|4|COMMON|0|VAR|BCD|BCD|BcdToByte||| | |
-14|卡有效期|4|COMMON|0|VAR|BCD|BYTE|BcdToByte||| | |
-15|清算日期|4|COMMON|0|VAR|BCD|BYTE|BcdToByte||| | |
-22|服务点输入方式码|3|COMMON|0|VAR|BCD|BYTE|BcdToByte||| | |
-23|卡序列号|3|COMMON|0|VAR|BCD|BYTE|BcdToByte||| | |
-25|服务点条件码|2|COMMON|0|VAR|BCD|BYTE|BcdToByte||| | |
-26|服务点PIN获取码|2|COMMON|0|VAR|BCD|BYTE|BcdToByte||| | |
-32|受理机构标识码|11|COMMON|0|VAR|BCD|BYTE|BcdToByte||| | |
-35|第二磁道数据|37|COMMON|0|LLVAR|BCD|BCD|BcdToByte||| | |
-36|第三磁道数据|104|COMMON|0|LLLVAR|BCD|BCD|BcdToByte||| | |
-37|检索参考号|12|COMMON|0|VAR|BCD|BYTE|BcdToByte||| | |
-38|授权标识应答码|6|COMMON|0|VAR|BYTE|BYTE|||| | |
-39|应答码|2|COMMON|0|VAR|BYTE|BYTE|||| | |
-41|受卡机终端标识码|8|COMMON|0|VAR|BYTE|BYTE|||| | |
-42|受卡方标识码|15|COMMON|0|VAR|BYTE|BYTE|||| | |
-44|附加响应数据|25|COMMON|0|LLVAR|ASCIIHEX|BYTE|||| | |
-48|附加数据-私有|512|COMMON|0|LLLVAR|ASCIIHEX|BCD|||| | |
-49|交易货币代码|3|COMMON|0|VAR|BYTE|BYTE|||| | |
-52|个人标识码数据|16|COMMON|0|VAR|BCD|BYTE|ByteToAsciiHex||| | |
-53|安全控制信息|16|COMMON|0|VAR|BCD|BYTE|BcdToByte||| | |
-54|实际余额|32|SUBFIELD|../pkg/posf54.pkg|LLLVAR|BCD|BYTE|||| | |
-55|基于PBOC借贷记标准的IC卡数据|255|SUBFIELD|../pkg/tlv.pkg|LLLVAR|BYTE|BCD|ByteToAsciiHex||| | |
-58|基于PBOC电子钱包/存折IC卡标准的交易数据|100|COMMON|0|LLLVAR|ASCIIHEX|BYTE|||| | |
-60|自定义域|100|COMMON|0|LLLVAR|BCD|BCD|BcdToByte||| | |
-61|原始信息域|200|COMMON|0|LLLVAR|BYTE|BCD|||| | |
-62|交换中心数据|0|COMMON|0|LLLVAR|BYTE|BCD|||Test,TestComment| | |
-63|金融网络数据|0|COMMON|0|LLLVAR|BYTE|BCD|ByteToAsciiHex||| | |
-64|MAC|8|COMMON|0|VAR|BYTE|BYTE|ByteToAsciiHex||| | |
+0|头|15|SUBFIELD|../pkg/poshead.pkg|VAR|BYTE|BCD|ByteToAsciiHex||
+1|BitMap|8|BITMAP|0|VAR|BYTE|BCD|ByteToBitmap||
+2|卡号|32|COMMON|0|LLVAR|BCD|BCD|BcdToByte||
+3|交易处理码|6|COMMON|0|VAR|BCD|BCD|BcdToByte||
+4|交易金额|12|COMMON|0|VAR|BCD|BCD|BcdToByte||
+11|系统跟踪号|6|COMMON|0|VAR|BCD|BCD|BcdToByte||
+12|受卡方所在地时间|6|COMMON|0|VAR|BCD|BCD|BcdToByte||
+13|受卡方所在地日期|4|COMMON|0|VAR|BCD|BCD|BcdToByte||
+14|卡有效期|4|COMMON|0|VAR|BCD|BYTE|BcdToByte||
+15|清算日期|4|COMMON|0|VAR|BCD|BYTE|BcdToByte||
+22|服务点输入方式码|3|COMMON|0|VAR|BCD|BYTE|BcdToByte||
+23|卡序列号|3|COMMON|0|VAR|BCD|BYTE|BcdToByte||
+25|服务点条件码|2|COMMON|0|VAR|BCD|BYTE|BcdToByte||
+26|服务点PIN获取码|2|COMMON|0|VAR|BCD|BYTE|BcdToByte||
+32|受理机构标识码|11|COMMON|0|VAR|BCD|BYTE|BcdToByte||
+35|第二磁道数据|37|COMMON|0|LLVAR|BCD|BCD|BcdToByte||
+36|第三磁道数据|104|COMMON|0|LLLVAR|BCD|BCD|BcdToByte||
+37|检索参考号|12|COMMON|0|VAR|BCD|BYTE|BcdToByte||
+38|授权标识应答码|6|COMMON|0|VAR|BYTE|BYTE|||
+39|应答码|2|COMMON|0|VAR|BYTE|BYTE|||
+41|受卡机终端标识码|8|COMMON|0|VAR|BYTE|BYTE|||
+42|受卡方标识码|15|COMMON|0|VAR|BYTE|BYTE|||
+44|附加响应数据|25|COMMON|0|LLVAR|ASCIIHEX|BYTE|||
+48|附加数据-私有|512|COMMON|0|LLLVAR|ASCIIHEX|BCD|||
+49|交易货币代码|3|COMMON|0|VAR|BYTE|BYTE|||
+52|个人标识码数据|16|COMMON|0|VAR|BCD|BYTE|ByteToAsciiHex||
+53|安全控制信息|16|COMMON|0|VAR|BCD|BYTE|BcdToByte||
+54|实际余额|32|SUBFIELD|../pkg/posf54.pkg|LLLVAR|BCD|BYTE|||
+55|基于PBOC借贷记标准的IC卡数据|255|SUBFIELD|../pkg/tlv.pkg|LLLVAR|BYTE|BCD|ByteToAsciiHex||
+58|基于PBOC电子钱包/存折IC卡标准的交易数据|100|COMMON|0|LLLVAR|ASCIIHEX|BYTE|||
+60|自定义域|100|COMMON|0|LLLVAR|BCD|BCD|BcdToByte||
+61|原始信息域|200|COMMON|0|LLLVAR|BYTE|BCD|||
+62|交换中心数据|0|COMMON|0|LLLVAR|BYTE|BCD|||Test,TestComment
+63|金融网络数据|0|COMMON|0|LLLVAR|BYTE|BCD|ByteToAsciiHex||
+64|MAC|8|COMMON|0|VAR|BYTE|BYTE|ByteToAsciiHex||

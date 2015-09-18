@@ -605,14 +605,18 @@ int SavePkgDefToFile( UpkgDef* ud, char *cpPkgFile, FileType fileType )
     #DeleteNotHexChars 删除非16进制字符 \n\
 #sepChar , | \\\n\n\n" );
     fprintf( fp, "[PKGDEF]\n" );
-    fprintf( fp, "logLevel = %d # 0不打印日志, 1-打印日志\nlogFile = %s\n", ud->iLogLevel, ud->logFile );
-    fprintf( fp, "pkgId = %s\npkgName = %s\npkgType = %s #FIXED(定长) TLV 8583 SEP(分隔符)\npkgMsgFmt = %s ##AsciiHexToByte DeleteNotHexChars\nIFS = %c\n",
+    fprintf( fp,  "logLevel  = %d # 0不打印日志, 1-打印日志\nlogFile   = %s\n", ud->iLogLevel, ud->logFile );
+    fprintf( fp,  "pkgId     = %s\n"
+                  "pkgName   = %s\n"
+                  "pkgType   = %s #FIXED(定长) TLV 8583 SEP(分隔符)\n"
+                  "pkgMsgFmt = %s ##AsciiHexToByte DeleteNotHexChars\n"
+                  "IFS       = %c\n",
             ud->pkgDef->pkgId, ud->pkgDef->pkgName, ud->pkgDef->pkgType, ud->pkgDef->pkgMsgFmt, ud->pkgDef->IFS );
     if( fileType == FileTypeIni )
     {
         int fieldCount = 0;
         UpkgFldDefList *ufdl;
-        fprintf( fp, "fileType = INI #INI SEP\n" );
+        fprintf( fp, "fileType  = INI #INI SEP\n" );
         fprintf( fp, "fieldList = " );
         for( ufdl=ud->fieldHead; ufdl; ufdl=ufdl->next )
         {
@@ -627,19 +631,22 @@ int SavePkgDefToFile( UpkgDef* ud, char *cpPkgFile, FileType fileType )
         for( ufdl=ud->fieldHead; ufdl; ufdl=ufdl->next )
         {
             fprintf( fp, "[F%d]\n", ufdl->fieldId );
-            fprintf( fp, "fieldId = %d\n", ufdl->fieldId );
-            fprintf( fp, "fieldName = %s\n", ufdl->fieldName );
-            fprintf( fp, "fieldLength = %d\n", ufdl->fieldLength );
-            fprintf( fp, "fieldType = %s  #fieldType: COMMON-一般域 SUBFIELD-子报文  BITMAP- 位图\n", ufdl->fieldType );
-            fprintf( fp, "subPkgFile = %s\n", ufdl->subPkgFile );
-            fprintf( fp, "fieldLengthType = %s #fieldLengthType: VAR-固定长度 LLVAR-两位变长 LLLVAR-三位变长\n", ufdl->fieldLengthType );
-            fprintf( fp, "fieldCoding = %s #Coding: Byte-原值 AsciiHex-16进制字符串 BCD-BCD压缩 BIT-二进制比特101010101010\n", ufdl->fieldCoding );
-            fprintf( fp, "fieldLengthCoding = %s #Coding: Byte-原值 AsciiHex-16进制字符串 BCD-BCD压缩 BIT-二进制比特101010101010\n", ufdl->fieldLengthCoding );
-            fprintf( fp, "fieldFmt = %s\n", ufdl->fieldFmt );
-            fprintf( fp, "fieldLengthFmt = %s\n", ufdl->fieldLengthFmt );
-            fprintf( fp, "comment = %s\n", ufdl->comment );
-            fprintf( fp, "sepChar1 = %c\n", isprint(ufdl->sepChar1) ? ufdl->sepChar1 : ' ' );
-            fprintf( fp, "sepChar2 = %c\n\n", isprint(ufdl->sepChar2) ? ufdl->sepChar2 : ' ' );
+            fprintf( fp, "fieldId           = %d\n", ufdl->fieldId );
+            fprintf( fp, "fieldName         = %s\n", ufdl->fieldName );
+            fprintf( fp, "fieldLength       = %d\n", ufdl->fieldLength );
+            fprintf( fp, "fieldType         = %s            #fieldType: COMMON-一般域 SUBFIELD-子报文  BITMAP- 位图\n", ufdl->fieldType );
+            fprintf( fp, "subPkgFile        = %s\n", ufdl->subPkgFile );
+            fprintf( fp, "fieldLengthType   = %s             #fieldLengthType: VAR-固定长度 LLVAR-两位变长 LLLVAR-三位变长\n", ufdl->fieldLengthType );
+            fprintf( fp, "fieldCoding       = %s            #Coding: Byte-原值 AsciiHex-16进制字符串 BCD-BCD压缩 BIT-二进制比特101010101010\n", ufdl->fieldCoding );
+            fprintf( fp, "fieldLengthCoding = %s            #Coding: Byte-原值 AsciiHex-16进制字符串 BCD-BCD压缩 BIT-二进制比特101010101010\n", ufdl->fieldLengthCoding );
+            fprintf( fp, "fieldFmt          = %s\n", ufdl->fieldFmt );
+            fprintf( fp, "fieldLengthFmt    = %s\n", ufdl->fieldLengthFmt );
+            fprintf( fp, "comment           = %s\n", ufdl->comment );
+            if( isprint( ufdl->sepChar1 ) )
+                fprintf( fp, "sepChar1          = %c\n", ufdl->sepChar1 );
+            if( isprint( ufdl->sepChar2 ) )
+                fprintf( fp, "sepChar2          = %c\n", ufdl->sepChar2 );
+            fprintf( fp, "\n" );
         }
     }
     else if ( fileType == FileTypeSep )
@@ -652,12 +659,20 @@ int SavePkgDefToFile( UpkgDef* ud, char *cpPkgFile, FileType fileType )
         fprintf( fp, "#Coding: Byte-原值 AsciiHex-16进制字符串 BCD-BCD压缩 BIT-二进制比特101010101010\n\n" );
         for( ufdl=ud->fieldHead; ufdl; ufdl=ufdl->next )
         {
-            fprintf( fp, "%d|%s|%d|%s|%s|%s|%s|%s|%s|%s|%s|%c|%c|\n",
+            fprintf( fp, "%d|%s|%d|%s|%s|%s|%s|%s|%s|%s|%s",
             ufdl->fieldId, ufdl->fieldName, ufdl->fieldLength, 
             ufdl->fieldType, ufdl->subPkgFile, ufdl->fieldLengthType,
             ufdl->fieldCoding, ufdl->fieldLengthCoding, ufdl->fieldFmt, ufdl->fieldLengthFmt, 
-            ufdl->comment, isprint(ufdl->sepChar1) ? ufdl->sepChar1 : ' ', 
-            isprint(ufdl->sepChar2) ? ufdl->sepChar2 : ' ');
+            ufdl->comment );
+            if( isprint( ufdl->sepChar1 ) )
+            {
+                fprintf( fp, "|%c|", ufdl->sepChar1 );
+                if( isprint( ufdl->sepChar2 ) )
+                    fprintf( fp, "%c", ufdl->sepChar2 );
+            }
+            else if( isprint( ufdl->sepChar2 ) )
+                fprintf( fp, "||%c", ufdl->sepChar2 );
+            fprintf( fp, "\n" );
         }
     }
     fclose( fp );
