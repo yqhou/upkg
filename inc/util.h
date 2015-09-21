@@ -16,6 +16,7 @@
 #define MAX( a, b ) ( (a) > (b) ? (a) : (b) )
 #define MIN( a, b ) ( (a) > (b) ? (b) : (a) )
 
+
 typedef enum
 {
     False = 0,
@@ -57,4 +58,6 @@ FILE* GetIniFileNodePosition( char *cpFile, char *cpNode, FILE *fp )            
 Boolean StringIsDigit( char *cpSrc );
 Boolean StringIsNull( char *cpStr );
 Boolean StringIsNullOrWhiteSpace( char *cpStr );
+void GenSpace( char *cpSpace, int n );
+void StrcatSpace( char *cpStr, int n );
 #endif

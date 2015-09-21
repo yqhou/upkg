@@ -74,5 +74,6 @@ int main(int argc, char **argv )
     }
     ret = Unpack( caIn, strlen(caIn), pkgFile, caOut );
     printf( "\nOUT:\n%s\n", caOut );
+    system( "pause" );
     return ret;
 }

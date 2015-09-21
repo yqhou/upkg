@@ -24,7 +24,14 @@ void DeleteUpkgResultList(UpkgResultList *ur)
         p = q;
     }
 }
-
+UpkgResultList* SearchResultListByFieldId( UpkgResultList *url, int fieldId )
+{
+    UpkgResultList *p;
+    for( p=url; p; p=p->next )
+        if( p->fieldId == fieldId )
+            return p;
+    return NULL;
+}
 UpkgResultList* CopyUpkgResultList( UpkgResultList *urFrom )
 {
     if( urFrom == NULL ) return NULL;
@@ -40,20 +47,14 @@ UpkgResultList* CopyUpkgResultList( UpkgResultList *urFrom )
     }
     return urTo;
 }
-void GenSpace( int n, char *cpSpace )
-{
-    int i = 0;
-    for( i=0; i<n; i++ )
-        strcat( cpSpace, " " );
-    cpSpace[n] = 0;
-}
+
 
 void OneUpkgResultListToString( UpkgResultList *p, char *cpOut, int depth )
 { 
     char caSpace[64+1];
     if( depth < 0 ) depth = 0;
     memset( caSpace, 0, sizeof(caSpace) );
-    GenSpace( depth * 4, caSpace );
+    GenSpace( caSpace, depth * 4 );
     if( ! StringIsNull(p->comment) )
     {
         if( StringIsNull(p->nameZh) )

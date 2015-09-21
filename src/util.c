@@ -648,3 +648,18 @@ int GetIniConfig( char *cpFile, char *cpNode, char *cpCfgName, char *cpValue, in
     fclose( fp );
     return -1;
 }
+
+void GenSpace( char *cpSpace, int n )
+{
+    int i = 0;
+    for( i=0; i<n; i++ )
+        strcat( cpSpace, " " );
+    cpSpace[n] = 0;
+}
+
+void StrcatSpace( char *cpStr, int n )
+{
+    int i = 0;
+    for( i=0; i<n; i++ )
+        strcat( cpStr, " " );
+}

@@ -7,6 +7,7 @@ UpkgResultList *NewUpkgResultList();
 void DeleteUpkgResult(UpkgResultList *ur);
 UpkgResultList* CopyUpkgResultList( UpkgResultList *urFrom );
 void PrintUpkgResultList( UpkgResultList *ur );
+UpkgResultList* SearchResultListByFieldId( UpkgResultList *url, int fieldId );
 
 
 UpkgFldDefList *NewUpkgFldDefList();

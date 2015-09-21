@@ -1,7 +1,7 @@
 CC = gcc
 INCDIR=../inc
 BINDIR=../bin
-LIBPATH=../bin/
+LIBPATH=d:\program\lib
 OBJDIR=../obj
 IINC=-I${INCDIR}
 LLIB=-L${LIBPATH} 
@@ -25,11 +25,18 @@ utiltest:test.o
 	${CC} -g $^ -o ${BINDIR}/$@ ${LLIB} ${LIBFLAG}
 	rm -f $^
 
-upkg:main.o
+upkg:main.o #util.o list.o upkg.o pkgfile.o pkg.o
+	${CC} -g $^ -o ${BINDIR}/$@ ${LLIB} ${LIBFLAG}
+	rm -f $^
+ 
+ 
+
+pkg:pkgMain.o #util.o list.o upkg.o pkgfile.o pkg.o
 	${CC} -g $^ -o ${BINDIR}/$@ ${LLIB} ${LIBFLAG}
 	rm -f $^
     
-libupkg: util.o list.o upkg.o pkgfile.o
+       
+libupkg: util.o list.o upkg.o pkgfile.o pkg.o
 	${CC} -g -shared $^ -o ${LIBPATH}/$@$(SUFFIX)
 	rm -f $^
 	
