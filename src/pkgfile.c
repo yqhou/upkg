@@ -588,7 +588,7 @@ int SavePkgDefToFile( UpkgDef* ud, char *cpPkgFile, FileType fileType )
         return FAILED;
     }
     fprintf( fp, "### %s\n\n", cpPkgFile );
-    fprintf( fp, "#fieldLengthFmt: int FunctionName( char *in, int length) \n\
+    fprintf( fp, "#fieldLengthFmt: int FunctionName( char *in, int length, int *) \n\
     #ByteToInt   16进制转换10进制,0X00 0X0D=>214 \n\
     #AsciiHexToInt  16进制字符串转换10进制,\"000D\"=>214 \n\
     #BcdToInt     BCD压缩字符串转到Int 0X0D --> 000D --> 214 \n\

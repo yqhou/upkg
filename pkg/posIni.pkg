@@ -1,6 +1,6 @@
 ### ../pkg/posIni.pkg
 
-#fieldLengthFmt: int FunctionName( char *in, int length) 
+#fieldLengthFmt: int FunctionName( char *in, int length, int *) 
     #ByteToInt   16进制转换10进制,0X00 0X0D=>214 
     #AsciiHexToInt  16进制字符串转换10进制,"000D"=>214 
     #BcdToInt     BCD压缩字符串转到Int 0X0D --> 000D --> 214 
