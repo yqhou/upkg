@@ -38,7 +38,7 @@ fieldLengthType=VAR
 fieldLength=4
 fieldLengthCoding=BYTE
 fieldCoding=BYTE
-fieldFmt=
+fieldFmt=AsciiHexToIntEx
 fieldLengthFmt=
 comment=
 
