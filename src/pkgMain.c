@@ -50,6 +50,7 @@ int main( int argc, char **argv )
         ProcNoArg();
     else
     {
+        printf( "start from args... [%s] [%s] [%s] [%s]", argv[0], argv[1], argv[2], argv[3] );
         char caOut[20480];
         memset( caOut, 0, sizeof(caOut) );
         FILE *fp = fopen( argv[3], "wb" );
@@ -58,10 +59,10 @@ int main( int argc, char **argv )
             printf( "oepn %s fail, %s\n", argv[3], strerror(errno) );
             return -1;
         }
-        Pkg( argv[1], argv[2], caOut, sizeof(caOut)-1 );
+        int ret = Pkg( argv[1], argv[2], caOut, sizeof(caOut)-1 );
         fputs( caOut, fp );
         fclose( fp );
-        printf( "\nOUT:\n%s\n", caOut );   
+        printf( "ret = %d\nOUT:\n%s\n", ret, caOut );   
         system( "pause" );
     }
     return 0;
