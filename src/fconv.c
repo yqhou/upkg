@@ -163,7 +163,7 @@ int main( int argc, char **argv )
     {
         cSep = argv[4][0];
         printf( "·Ö¸ô·û: [%c]\n", cSep );
-        ret = Sep2Fixed( , argv[1], argv[2], argv[3] );
+        ret = Sep2Fixed( cSep , argv[1], argv[2], argv[3] );
         printf( "ret = %d\n", ret );
     }
     else
