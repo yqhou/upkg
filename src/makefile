@@ -35,7 +35,10 @@ pkg:pkgMain.o #util.o list.o upkg.o pkgfile.o pkg.o
 	${CC} -g $^ -o ${BINDIR}/$@ ${LLIB} ${LIBFLAG}
 	rm -f $^
     
-       
+Sep2Fixed:fconv.o util.o 
+	${CC} -g $^ -o ${BINDIR}/$@ 
+	rm -f $^
+           
 libupkg: util.o list.o upkg.o pkgfile.o pkg.o
 	${CC} -g -shared $^ -o ${LIBPATH}/$@$(SUFFIX)
 	rm -f $^
