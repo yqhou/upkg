@@ -134,7 +134,7 @@ int Sep2Fixed( char cSep, char *cfgFile, char *fromFile, char *toFile )
     return 0;
 }
 
-int main(int argc, char **argv )
+int Main1()
 {
     char fromFile[512], toFile[512], cfgFile[512], cSep;
     printf( "配置文件: " );
@@ -153,7 +153,21 @@ int main(int argc, char **argv )
     */
     cSep = ',';
     int ret = Sep2Fixed( cSep, cfgFile, fromFile, toFile );
-    printf( "ret = %d\n", ret );
-    system( "pause" );
-    return 0;
+    return ret;
+}
+int main( int argc, char **argv )
+{
+    int ret = 0;
+    printf( "分隔符文件转换为定长格式\n支持命令行. %s 配置文件名 源文件名 目的文件名 源文件分隔符", argv[0] );
+    if( argc == 4 )
+    {
+        ret = Sep2Fixed( ',', argv[1], argv[2], argv[3] );
+        printf( "ret = %d\n", ret );
+    }
+    else
+    {
+        ret = Main1();
+        printf( "ret = %d\n", ret );
+        system( "pause" );
+    }
 }
