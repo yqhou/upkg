@@ -146,8 +146,9 @@ int Main1()
     printf( "目的文件: " );
     fgets( toFile, sizeof(toFile)-1, stdin );
     trim( toFile );
+    
+    printf( "默认分隔符 ',' " );
     /*
-    printf( "分隔符: " );
     cSep = getchar();
     fflush( stdin );
     */
@@ -158,16 +159,17 @@ int Main1()
 int main( int argc, char **argv )
 {
     int ret = 0;
-    printf( "分隔符文件转换为定长格式\n支持命令行. %s 配置文件名 源文件名 目的文件名 源文件 分隔符\n", argv[0] );
+    printf( "分隔符文件转换为定长格式\n支持命令行:\n%s 配置文件名 源文件名 目的文件名 源文件 分隔符\n例如:\nSep2Fixed gmht.cfg gmht_20150101.csv gmht_20150101_fixed.txt ,\n", argv[0] );
     if( argc == 5 )
     {
-        cSep = argv[4][0];
-        printf( "分隔符: [%c]\n", cSep );
+        char cSep = argv[4][0];
+        printf( "命令行启动\n分隔符: [%c]\n", cSep );
         ret = Sep2Fixed( cSep , argv[1], argv[2], argv[3] );
         printf( "ret = %d\n", ret );
     }
     else
     {
+        printf( "\n手动输入参数, 分隔符默认逗号','\n");
         ret = Main1();
         printf( "ret = %d\n", ret );
         system( "pause" );
